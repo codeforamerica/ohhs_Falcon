@@ -14,7 +14,7 @@ from ModestMaps.Core import Coordinate
 from ModestMaps.OpenStreetMap import Provider
 
 min_zoom = 14
-max_zoom = 16
+max_zoom = 17
 
 def yyyymmdd(date_string):
     '''
@@ -155,12 +155,27 @@ if __name__ == '__main__':
         print coord, len(found_buildings), 'of', len(building_list)
         
         try:
-            makedirs('out/%(zoom)d/%(column)d' % coord.__dict__)
+            makedirs('tiles/%(zoom)d/%(column)d' % coord.__dict__)
         except OSError:
             pass # directory probably exists
         
-        with open('out/%(zoom)d/%(column)d/%(row)d.json' % coord.__dict__, 'w') as out:
-            dump(found_buildings, out, indent=4)
+        with open('tiles/%(zoom)d/%(column)d/%(row)d.json' % coord.__dict__, 'w') as out:
+            features = [dict(
+                            type='Feature',
+                            properties=p,
+                            geometry=dict(
+                                type='Point',
+                                coordinates=(p['longitude'], p['latitude'])
+                                )
+                            )
+                        for p in found_buildings]
+        
+            geojson = dict(
+                type='FeatureCollection',
+                features=features
+                )
+        
+            dump(geojson, out, indent=2)
         
         if coord.zoom < max_zoom:
             search_coords.append((coord.zoomBy(1), found_buildings))
