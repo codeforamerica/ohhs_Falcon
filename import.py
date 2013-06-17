@@ -1,6 +1,10 @@
 from requests import get
 from csv import DictReader
 from StringIO import StringIO
+from itertools import product
+from ModestMaps.Geo import Location
+from ModestMaps.Core import Coordinate
+from ModestMaps.OpenStreetMap import Provider
 
 def load_violations(url):
     '''
@@ -30,6 +34,24 @@ def load_buildings(url):
     
     return buildings
 
+def starting_tiles(buildings):
+    ''' Gets tile coordinates for a dictionary of buildings.
+    '''
+    minlat = min([b['building_latitude'] for b in buildings.values()])
+    minlon = min([b['building_longitude'] for b in buildings.values()])
+    maxlat = max([b['building_latitude'] for b in buildings.values()])
+    maxlon = max([b['building_longitude'] for b in buildings.values()])
+    
+    osm = Provider()
+    
+    ul = osm.locationCoordinate(Location(maxlat, minlon)).zoomTo(14).container()
+    lr = osm.locationCoordinate(Location(minlat, maxlon)).zoomTo(14).container()
+    
+    rows, cols = range(int(ul.row), int(lr.row+1)), range(int(ul.column), int(lr.column+1))
+    coords = [Coordinate(row, col, 14) for (row, col) in product(rows, cols)]
+    
+    return coords
+
 if __name__ == '__main__':
 
     print 'Getting violations...'
@@ -44,10 +66,4 @@ if __name__ == '__main__':
     buildings_url = 'http://localhost/~migurski/OHHS-Map/Buildings.csv'
     buildings = load_buildings(buildings_url)
     
-    minlat = min([b['building_latitude'] for b in buildings.values()])
-    minlon = min([b['building_longitude'] for b in buildings.values()])
-    maxlat = max([b['building_latitude'] for b in buildings.values()])
-    maxlon = max([b['building_longitude'] for b in buildings.values()])
-    
-    print minlat, minlon, maxlat, maxlon
-
+    starting_tiles(buildings)
