@@ -9,8 +9,6 @@ $(function(){
 
   map.addLayer(mapquest);
 
-//https://raw.github.com/smartchicago/chicago-atlas/master/db/import/zipcodes.geojson
-
   var style = {
     "clickable": true,
     "color": "#00D",
@@ -23,7 +21,7 @@ $(function(){
     "fillOpacity": 0.5
   };
 
-  var geojsonURL = 'http://data.codeforamerica.org.global.prod.fastly.net/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
+  var geojsonURL = 'http://data.codeforamerica.org/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
   }, {
