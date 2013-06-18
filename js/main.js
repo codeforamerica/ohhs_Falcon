@@ -1,16 +1,22 @@
 var map;
 
+var __defaults = {
+    city_name: 'San Francisco',
+    bounds: [37.816, -122.536, 37.693, -122.340],
+    center: [37.767745, -122.441475]
+    };
+
 //
 // map.setView() with a check for SF bounds.
 //
 function boundedSetView(center)
 {
-    var bounds = [37.816, -122.536, 37.693, -122.340];
+    var bounds = __defaults.bounds;
     
     if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
     {
-        // found location is outside of San Francisco, so we will not set the view.
-        return alert("You were about to look outside of San Francisco - try searching for an address inside the city?");
+        // found location is outside of default city, so we will not set the view.
+        return alert("You were about to look outside of "+__default.city_name+" - try searching for an address inside the city?");
     }
     
     map.setView(center, 18);
@@ -24,7 +30,6 @@ function onLocationFound(location)
 {
     var ne = location.bounds._northEast,
         sw = location.bounds._southWest,
-        bounds = [37.816, -122.536, 37.693, -122.340],
         center = new L.LatLng(ne.lat/2 + sw.lat/2, ne.lng/2 + sw.lng/2);
     
     if(location.accuracy > 500)
@@ -112,7 +117,7 @@ var falcon = {
 
 $(function(){
   
-   map = L.map('map').setView([37.767745, -122.441475], 12);
+   map = L.map('map').setView(__defaults.center, 12);
   var mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
   subDomains = ['otile1','otile2','otile3','otile4'],
   mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
@@ -155,7 +160,7 @@ $(function(){
                 inFormat:"kvp",
                 key:"Fmjtd|luua2q6and,aa=o5-hzb59",
                 boundingBox:"37.816,-122.536,37.693,-122.340",
-                location:$("#address").val() + ', San Francisco'};
+                location:$("#address").val() + ', ' + __default.city_name};
     
     $.ajax(url, {data: data, dataType: 'jsonp', success: onAddressFound});
 
