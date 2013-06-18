@@ -183,12 +183,8 @@ $(function(){
     onEachFeature: function (feature, layer) {
 
       layer.on("click", function(){
-        
-        //map.panTo(layer._latlng)
-        
+        map.panTo(layer._latlng);
         falcon.showBuildingDetails(feature.properties);
-
-        
         console.log(feature, layer)
 
       });
