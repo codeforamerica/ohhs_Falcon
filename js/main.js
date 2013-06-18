@@ -1,5 +1,51 @@
 var map;
 
+//
+// map.setView() with a check for SF bounds.
+//
+function boundedSetView(center)
+{
+    var bounds = [37.816, -122.536, 37.693, -122.340];
+    
+    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
+    {
+        // found location is outside of San Francisco, so we will not set the view.
+        return alert("You were about to look outside of San Francisco - try searching for an address inside the city?");
+    }
+    
+    map.setView(center, 18);
+}
+
+//
+// Callback function for browser geolocation.
+// http://leafletjs.com/reference.html#map-locate
+//
+function onLocationFound(location)
+{
+    var ne = location.bounds._northEast,
+        sw = location.bounds._southWest,
+        bounds = [37.816, -122.536, 37.693, -122.340],
+        center = new L.LatLng(ne.lat/2 + sw.lat/2, ne.lng/2 + sw.lng/2);
+    
+    if(location.accuracy > 500)
+    {
+        // accuracy of location in meters > 500m, which means we really
+        // don't know where someone is. Do something here to flag that.
+        return alert("couldn't locate you with sufficient accuracy");
+    }
+    
+    return boundedSetView(center);
+}
+
+//
+// Callback function for geocode results from Mapquest Open.
+// http://open.mapquestapi.com/geocoding/
+//
+function onAddressFound(response)
+{
+    var center = response.results[0].locations[0].latLng;
+    return boundedSetView(center);
+}
 
 var falcon = {
 
@@ -74,50 +120,6 @@ $(function(){
 
   map.addLayer(mapquest);
   
-  function boundedSetView(center)
-  {
-    var bounds = [37.816, -122.536, 37.693, -122.340];
-    
-    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
-    {
-        // found location is outside of San Francisco, so we will not set the view.
-        return alert("You were about to look outside of San Francisco - try searching for an address inside the city?");
-    }
-    
-    map.setView(center, 18);
-  }
-  
-  //
-  // Callback function for browser geolocation.
-  // http://leafletjs.com/reference.html#map-locate
-  //
-  function onLocationFound(location)
-  {
-    var ne = location.bounds._northEast,
-        sw = location.bounds._southWest,
-        bounds = [37.816, -122.536, 37.693, -122.340],
-        center = {lat: ne.lat/2 + sw.lat/2, lng: ne.lng/2 + sw.lng/2};
-    
-    if(location.accuracy > 500)
-    {
-        // accuracy of location in meters > 500m, which means we really
-        // don't know where someone is. Do something here to flag that.
-        return alert("couldn't locate you with sufficient accuracy");
-    }
-    
-    return boundedSetView(center);
-  }
-  
-  //
-  // Callback function for geocode results from Mapquest Open.
-  // http://open.mapquestapi.com/geocoding/
-  //
-  function onAddressFound(response)
-  {
-    var center = response.results[0].locations[0].latLng;
-    return boundedSetView(center);
-  }
-
   map.on('locationfound', onLocationFound);
   map.locate({setView: false, maxZoom: 19});
 
