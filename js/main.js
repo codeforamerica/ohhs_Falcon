@@ -12,7 +12,9 @@ $(function(){
   function onLocationFound(location)
   {
     var ne = location.bounds._northEast,
-        sw = location.bounds._southWest;
+        sw = location.bounds._southWest,
+        bounds = [37.816, -122.536, 37.693, -122.340],
+        center = {lat: ne.lat/2 + sw.lat/2, lng: ne.lng/2 + sw.lng/2};
     
     if(location.accuracy > 500)
     {
@@ -21,7 +23,13 @@ $(function(){
         return alert("couldn't locate you with sufficient accuracy");
     }
     
-    map.setView({lat: ne.lat/2 + sw.lat/2, lng: ne.lng/2 + sw.lng/2}, 18);
+    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
+    {
+        // found location is outside of San Francisco, so we will not set the view.
+        return alert("You are currently outside of San Francisco - try searching for an address inside the city?");
+    }
+    
+    map.setView(center, 18);
   }
   
   map.on('locationfound', onLocationFound);
