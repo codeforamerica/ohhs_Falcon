@@ -52,6 +52,30 @@ function onAddressFound(response)
     return boundedSetView(center);
 }
 
+//
+// Set up map, but don't set the view to anything.
+//
+function setupMap(element)
+{
+    var map = L.map('map'),
+        mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
+        subDomains = ['otile1','otile2','otile3','otile4'],
+        mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.',
+        mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
+    
+    map.addLayer(mapquest);
+    
+    return map;
+}
+
+//
+// Callback function for a loaded building.
+//
+function onBuildingLoaded(building)
+{
+    boundedSetView(new L.LatLng(building.latitude, building.longitude));
+}
+
 var falcon = {
 
   showBuildingDetails:function(building){
@@ -116,18 +140,23 @@ var falcon = {
 
 
 $(function(){
-  
-   map = L.map('map').setView(__defaults.center, 12);
-  var mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-  subDomains = ['otile1','otile2','otile3','otile4'],
-  mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
-  var mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
 
-  map.addLayer(mapquest);
+  map = setupMap('map');
   
-  map.on('locationfound', onLocationFound);
-  map.locate({setView: false, maxZoom: 19});
+  if(location.hash.match(/^#\w+$/)) {
+    //
+    // 
+    //
+    var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
+        building_url = 'http://data.codeforamerica.org/OHHS/SF/1.2/buildings/'+building_id+'.json';
 
+    $.ajax(building_url, {success: onBuildingLoaded})
+
+  } else {
+    map.setView(__defaults.center, 12);
+    map.on('locationfound', onLocationFound);
+    map.locate({setView: false, maxZoom: 19});
+  }
 
   var geojsonURL = 'http://data.codeforamerica.org/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
