@@ -26,6 +26,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
     _requests: [],
     _data: [],
     data: function () {
+
         for (var t in this._tiles) {
             var tile = this._tiles[t];
             if (!tile.processed) {
@@ -36,6 +37,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
         return this._data;
     },
     _addTile: function(tilePoint, container) {
+    
         var tile = { datum: null, processed: false };
         this._tiles[tilePoint.x + ':' + tilePoint.y] = tile;
         this._loadTile(tile, tilePoint);
@@ -55,19 +57,24 @@ L.TileLayer.Ajax = L.TileLayer.extend({
             }
         }
     },
+  loadedTiles:{},
     // Load the requested tile via AJAX
     _loadTile: function (tile, tilePoint) {
-        var zoomDiff = this._map.getZoom() - 17;
-        var newPoint = {x: tilePoint.x / Math.pow(2, zoomDiff), y: tilePoint.y / Math.pow(2, zoomDiff), z: 17};
-
-        if(newPoint.x > Math.floor(newPoint.x) || newPoint.y > Math.floor(newPoint.y))
-        {
-          this._tilesToLoad--;
-          return;
+        if(this._map.getZoom() >= 17){
+            var zoomDiff = this._map.getZoom() - 17;
+            var zoom = (this._map.getZoom() > 17 ? 17 : this._map.getZoom())
+            var newPoint = {x: Math.floor(tilePoint.x / Math.pow(2, zoomDiff)), y: Math.floor(tilePoint.y / Math.pow(2, zoomDiff)), z: zoom};
+            if(newPoint.x+":"+newPoint.y+":"+newPoint.z  in this.loadedTiles){
+                this._tilesToLoad--;
+                return;
+            }else{
+                this.loadedTiles[newPoint.x+":"+newPoint.y+":"+newPoint.z]={};
+            }
+        }else{
+            newPoint = tilePoint;
+            newPoint.z = this._map.getZoom();
         }
-      
         this._adjustTilePoint(newPoint);
-
         var layer = this;
         var req = new XMLHttpRequest();
         this._requests.push(req);
@@ -87,6 +94,26 @@ L.TileLayer.Ajax = L.TileLayer.extend({
         if (this._map._panTransition && this._map._panTransition._inProgress) { return; }
         if (this._tilesToLoad < 0) this._tilesToLoad = 0;
         L.TileLayer.prototype._update.apply(this, arguments);
+      this.loadedTiles ={};
+		if (!this._map) { return; }
+
+		var bounds = this._map.getPixelBounds(),
+		    zoom = (this._map.getZoom() > 17 ? 17: this._map.getZoom()),
+		    tileSize = this.options.tileSize;
+
+		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
+			return;
+		}
+
+		var tileBounds = L.bounds(
+		        bounds.min.divideBy(tileSize)._floor(),
+		        bounds.max.divideBy(tileSize)._floor());
+
+		this._addTilesFromCenterOut(tileBounds);
+
+		if (this.options.unloadInvisibleTiles || this.options.reuseTiles) {
+			this._removeOtherTiles(tileBounds);
+		}
     }
 });
 
@@ -141,6 +168,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         L.TileLayer.Ajax.prototype._resetCallback.apply(this, arguments);
     },
     _tilesLoaded: function (evt) {
-      this.geojsonLayer.clearLayers().addData(this.data());
+      var data = this.data();
+      this.geojsonLayer.clearLayers().addData(data);
     }
 });
