@@ -27,6 +27,14 @@ var falcon = {
         insp.violations =[];
       console.log(insp);
       totalViolations += insp.violations.length;
+      insp.groupedViolations = {};
+      for(v in insp.violations){
+        var vio = insp.violations[v];
+        if(vio.category+":"+vio.type in insp.groupedViolations)
+          insp.groupedViolations[vio.category+":"+vio.type].count +=1;
+        else
+          insp.groupedViolations[vio.category+":"+vio.type] = {count:1, type:vio.type, category:vio.category, date_closed:vio.date_closed};
+      }
     }
     
 
@@ -40,9 +48,9 @@ var falcon = {
       if(insp.violations.length === 0)
         continue;
       var violationString = "";
-      for(v in insp.violations){
-        var vio = insp.violations[v];
-        violationString += vio.category + " (" + vio.type + ") violation was found, ";
+      for(v in insp.groupedViolations){
+        var vio = insp.groupedViolations[v];
+        violationString += " "+ vio.count+" "+vio.category + " (" + vio.type + ") violation was found, ";
         if(vio.date_closed)
           violationString += " and was closed "+ vio.date_closed;
         else
