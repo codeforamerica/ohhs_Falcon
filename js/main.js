@@ -58,10 +58,11 @@ $(function(){
     var data = {outFormat:"json",
                 inFormat:"kvp",
                 key:"Fmjtd|luua2q6and,aa=o5-hzb59",
+                boundingBox:"37.8059864,-122.5463104,37.6930576,-122.3396301",
                 location:$("#address").val()};
 
     $.ajax(url, {data:data, dataType:"jsonp", success:function(data){
-
+      console.log(data)
       //TODO: check for errors
       map.panTo([data.results[0].locations[0].displayLatLng.lat, data.results[0].locations[0].displayLatLng.lng]);
 
