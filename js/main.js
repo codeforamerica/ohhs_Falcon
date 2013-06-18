@@ -96,32 +96,36 @@ var falcon = {
 
     if(!building.inspections)
       building.inspections = [];
-    for(i in building.inpections){
+
+    for(i in building.inspections){
       var insp = building.inspections[i];
       if(!insp.violations)
         insp.violations =[];
+      console.log(insp);
       totalViolations += insp.violations.length;
     }
     
 
     var detailHTML = "<div class='address'>"+address+"</div>";
     detailHTML += "<div class='ownername'>"+building.owner_name+"</div>";
-    detailHTML += "<div class='propertyid'>"+building.id+"</div>";
-    detailHTML += "<div class='inspections'> This builsing has been inspected "+building.inspections.length+" times, most recently June 2012</div>";
+    detailHTML += "<div class='propertyid'>Property Id: "+building.id+"</div>";
+    detailHTML += "<div class='inspections'> This building has been inspected "+building.inspections.length+" times, most recently June 2012</div>";
     detailHTML += "<div class='violations'>There have been "+totalViolations+" violations: <ul>"
-    for(i in building.inpsections){
+    for(i in building.inspections){
       var insp = building.inspections[i];
-      var violationsString = "";
+      if(insp.violations.length === 0)
+        continue;
+      var violationString = "";
       for(v in insp.violations){
         var vio = insp.violations[v];
-        violationString += vio.category + " (" + vio.type + ")";
+        violationString += vio.category + " (" + vio.type + ") violation was found, ";
         if(vio.date_closed)
-          violationString += "and was closed "+ vio.date_closed;
+          violationString += " and was closed "+ vio.date_closed;
         else
-          violationString+= "and was never resolved."
+          violationString+= " and was never resolved."
       }
 
-      detailHTML += "<li> During a routine inspection in "+insp.date+", </li>"
+      detailHTML += "<li> During a routine inspection in "+insp.date+", "+violationString+"</li>"
       
     }
 
