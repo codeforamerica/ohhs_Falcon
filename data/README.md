@@ -23,7 +23,7 @@ on linux:
 Usage
 -----
 
-`./import.py` will import OHHS data from a remote URL and index it into
+`./import-tiles.py` will import OHHS data from a remote URL and index it into
 a directory of [GeoJSON](http://www.geojson.org/) files in `tiles`.
 
 `./import-buildings.py` will import OHHS data from a remote URL and generate

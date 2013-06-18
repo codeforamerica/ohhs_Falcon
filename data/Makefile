@@ -9,4 +9,4 @@ Parcel.geojson: Parcel.shp
 	ogr2ogr -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION=7 -lco WRITE_BBOX=YES Parcel.geojson Parcel.shp
 
 Parcel.shp:
-	curl --compress -OL "http://data.codeforamerica.org/OHHS/SF/1.2/Parcel.{dbf,prj,shp,shx}"
+	curl -OL "http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Parcel.{dbf,prj,shp,shx}"

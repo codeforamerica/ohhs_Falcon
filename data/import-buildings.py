@@ -49,24 +49,24 @@ def match_building_parcel(parcels, buildings):
 
 if __name__ == '__main__':
 
-    print 'Getting parcels...'
+    print 'Loading parcels...'
 
     parcels_url = 'Parcel.geojson'
     parcels = load_parcels(parcels_url)
     
     print 'Getting violations...'
 
-    violations_url = 'file:///Users/migurski/Sites/OHHS-Map/data/Violations.csv'
+    violations_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Violations.csv'
     violations = load_violations(violations_url)
 
     print 'Getting inspections...'
 
-    inspections_url = 'file:///Users/migurski/Sites/OHHS-Map/data/Inspections.csv'
+    inspections_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Inspections.csv'
     inspections = load_inspections(inspections_url)
 
     print 'Getting buildings...'
 
-    buildings_url = 'file:///Users/migurski/Sites/OHHS-Map/data/Buildings.csv'
+    buildings_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Buildings.csv'
     buildings = load_buildings(buildings_url)
     
     print 'Matching inspection violations...'
