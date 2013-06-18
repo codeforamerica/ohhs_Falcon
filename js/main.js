@@ -8,7 +8,24 @@ $(function(){
   var mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
 
   map.addLayer(mapquest);
-  map.locate({setView:true, maxZoom:19});
+  
+  function onLocationFound(location)
+  {
+    var ne = location.bounds._northEast,
+        sw = location.bounds._southWest;
+    
+    if(location.accuracy > 500)
+    {
+        // accuracy of location in meters > 500m, which means we really
+        // don't know where someone is. Do something here to flag that.
+        return alert("couldn't locate you with sufficient accuracy");
+    }
+    
+    map.setView({lat: ne.lat/2 + sw.lat/2, lng: ne.lng/2 + sw.lng/2}, 18);
+  }
+  
+  map.on('locationfound', onLocationFound);
+  map.locate({setView: false, maxZoom: 19});
 
   var style = {
     "clickable": true,
