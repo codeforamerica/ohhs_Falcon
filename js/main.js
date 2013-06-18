@@ -2,6 +2,7 @@ var map;
 
 var __defaults = {
     city_name: 'San Francisco',
+    data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
     bounds: [37.816, -122.536, 37.693, -122.340],
     center: [37.767745, -122.441475]
     };
@@ -145,20 +146,23 @@ $(function(){
   
   if(location.hash.match(/^#\w+$/)) {
     //
-    // 
+    // Found what looks like a building ID in the URL, so use it.
     //
     var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
-        building_url = 'http://data.codeforamerica.org/OHHS/SF/1.2/buildings/'+building_id+'.json';
+        building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
 
     $.ajax(building_url, {success: onBuildingLoaded})
 
   } else {
+    //
+    // Otherwise, just pick out the center of the city and then try geolocating.
+    //
     map.setView(__defaults.center, 12);
     map.on('locationfound', onLocationFound);
     map.locate({setView: false, maxZoom: 19});
   }
 
-  var geojsonURL = 'http://data.codeforamerica.org/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
+  var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
     maxZoom:20
