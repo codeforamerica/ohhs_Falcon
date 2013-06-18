@@ -64,7 +64,7 @@ $(function(){
     $.ajax(url, {data:data, dataType:"jsonp", success:function(data){
       console.log(data)
       //TODO: check for errors
-      map.panTo([data.results[0].locations[0].displayLatLng.lat, data.results[0].locations[0].displayLatLng.lng]);
+      map.panTo([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
 
     }});
 
