@@ -169,6 +169,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     },
     _tilesLoaded: function (evt) {
       var data = this.data();
+      console.log("tilesloaded", data);
       this.geojsonLayer.clearLayers().addData(data);
     }
 });

@@ -1,7 +1,72 @@
 var map;
+
+
+var falcon = {
+
+  showBuildingDetails:function(building){
+    console.log("details", building);
+    var address = "";
+
+    if(building.from_street_num === building.to_street_num)
+      address += building.from_street_num;
+    else
+      address += building.from_street_num + "-"+ building.to_street_num
+
+    address += " "+building.street +" "+ building.st_type+". "+ building.city+", "+ building.state + " "+  building.postal_code;
+
+    
+    var totalViolations = 0,
+        recentInspectionDate = null;
+
+    if(!building.inspections)
+      building.inspections = [];
+    for(i in building.inpections){
+      var insp = building.inspections[i];
+      if(!insp.violations)
+        insp.violations =[];
+      totalViolations += insp.violations.length;
+    }
+    
+
+    var detailHTML = "<div class='address'>"+address+"</div>";
+    detailHTML += "<div class='ownername'>"+building.owner_name+"</div>";
+    detailHTML += "<div class='propertyid'>"+building.id+"</div>";
+    detailHTML += "<div class='inspections'> This builsing has been inspected "+building.inspections.length+" times, most recently June 2012</div>";
+    detailHTML += "<div class='violations'>There have been "+totalViolations+" violations: <ul>"
+    for(i in building.inpsections){
+      var insp = building.inspections[i];
+      var violationsString = "";
+      for(v in insp.violations){
+        var vio = insp.violations[v];
+        violationString += vio.category + " (" + vio.type + ")";
+        if(vio.date_closed)
+          violationString += "and was closed "+ vio.date_closed;
+        else
+          violationString+= "and was never resolved."
+      }
+
+      detailHTML += "<li> During a routine inspection in "+insp.date+", </li>"
+      
+    }
+
+    detailHTML += "</ul></div>"
+    
+    detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type+" with "+
+      building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
+    
+    detailHTML += "<div class='ownercontact'>Contact the owner at "+building.owner_mailing_address+"</div>";
+    detailHTML += "<div class='contactinfo'>SFDPH Contact Info</div>"
+    
+    $("div#housinginfo").html(detailHTML);
+
+  }
+
+};
+
+
 $(function(){
   
-  map = L.map('map').setView([37.7749295, -122.4494155], 17);
+   map = L.map('map').setView([37.7749295, -122.4494155], 17);
   var mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
   subDomains = ['otile1','otile2','otile3','otile4'],
   mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
@@ -10,37 +75,20 @@ $(function(){
   map.addLayer(mapquest);
   map.locate({setView:true, maxZoom:19})
 
-  var style = {
-    "clickable": true,
-    "color": "#00D",
-    "fillColor": "#00D",
-    "weight": 1.0,
-    "opacity": 0.3,
-    "fillOpacity": 0.2
-  };
-  var hoverStyle = {
-    "fillOpacity": 0.5
-  };
 
   var geojsonURL = 'http://data.codeforamerica.org/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
     maxZoom:20
   }, {
-    style: style,
     onEachFeature: function (feature, layer) {
 
       layer.on("click", function(){
         
         map.panTo(layer._latlng)
+        
+        falcon.showBuildingDetails(feature.properties);
 
-        var infoString = '<div>';
-        for (var k in feature.properties) {
-          var v = feature.properties[k];
-          infoString += k + ': ' + v + '<br />';
-        }
-        infoString += '</div>';
-        $("div#housinginfo").html(infoString);
         
         console.log(feature, layer)
 
@@ -69,7 +117,6 @@ $(function(){
     }});
 
   });
-
 
 
 });
