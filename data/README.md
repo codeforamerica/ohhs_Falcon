@@ -14,8 +14,17 @@ like this:
     make
     source venv-ohhs-map/bin/activate
 
+Also create the file `Parcel.geojson` with parcel geometries, after installing
+`ogr2ogr` using `brew install gdal` on mac or `apt-get install gdal-bin`
+on linux:
+
+    make Parcel.geojson
+
 Usage
 -----
 
-`python import.py` will import OHHS data from a remote URL and index it into
+`./import-tiles.py` will import OHHS data from a remote URL and index it into
 a directory of [GeoJSON](http://www.geojson.org/) files in `tiles`.
+
+`./import-buildings.py` will import OHHS data from a remote URL and generate
+a directory of per-building JSON files in `buildings`.
