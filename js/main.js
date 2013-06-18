@@ -1,5 +1,81 @@
 var map;
 
+var __defaults = {
+    city_name: 'San Francisco',
+    data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
+    bounds: [37.816, -122.536, 37.693, -122.340],
+    center: [37.767745, -122.441475]
+    };
+
+//
+// map.setView() with a check for SF bounds.
+//
+function boundedSetView(center)
+{
+    var bounds = __defaults.bounds;
+    
+    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
+    {
+        // found location is outside of default city, so we will not set the view.
+        return alert("You were about to look outside of "+__default.city_name+" - try searching for an address inside the city?");
+    }
+    
+    map.setView(center, 18);
+}
+
+//
+// Callback function for browser geolocation.
+// http://leafletjs.com/reference.html#map-locate
+//
+function onLocationFound(location)
+{
+    var ne = location.bounds._northEast,
+        sw = location.bounds._southWest,
+        center = new L.LatLng(ne.lat/2 + sw.lat/2, ne.lng/2 + sw.lng/2);
+    
+    if(location.accuracy > 500)
+    {
+        // accuracy of location in meters > 500m, which means we really
+        // don't know where someone is. Do something here to flag that.
+        return alert("couldn't locate you with sufficient accuracy");
+    }
+    
+    return boundedSetView(center);
+}
+
+//
+// Callback function for geocode results from Mapquest Open.
+// http://open.mapquestapi.com/geocoding/
+//
+function onAddressFound(response)
+{
+    var center = response.results[0].locations[0].latLng;
+    return boundedSetView(center);
+}
+
+//
+// Set up map, but don't set the view to anything.
+//
+function setupMap(element)
+{
+    var map = L.map('map'),
+        mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
+        subDomains = ['otile1','otile2','otile3','otile4'],
+        mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.',
+        mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
+    
+    map.addLayer(mapquest);
+    
+    return map;
+}
+
+//
+// Callback function for a loaded building.
+//
+function onBuildingLoaded(building)
+{
+    boundedSetView(new L.LatLng(building.latitude, building.longitude));
+}
 
 var falcon = {
 
@@ -77,18 +153,28 @@ var falcon = {
 
 
 $(function(){
+
+  map = setupMap('map');
   
-   map = L.map('map').setView([37.7749295, -122.4494155], 17);
-  var mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-  subDomains = ['otile1','otile2','otile3','otile4'],
-  mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
-  var mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
+  if(location.hash.match(/^#\w+$/)) {
+    //
+    // Found what looks like a building ID in the URL, so use it.
+    //
+    var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
+        building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
 
-  map.addLayer(mapquest);
-  map.locate({setView:true, maxZoom:19})
+    $.ajax(building_url, {success: onBuildingLoaded})
 
+  } else {
+    //
+    // Otherwise, just pick out the center of the city and then try geolocating.
+    //
+    map.setView(__defaults.center, 12);
+    map.on('locationfound', onLocationFound);
+    map.locate({setView: false, maxZoom: 19});
+  }
 
-  var geojsonURL = 'http://data.codeforamerica.org/OHHS/SF/1.2/tiles/{z}/{x}/{y}.json';
+  var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
     maxZoom:20
@@ -97,7 +183,7 @@ $(function(){
 
       layer.on("click", function(){
         
-        map.panTo(layer._latlng)
+        //map.panTo(layer._latlng)
         
         falcon.showBuildingDetails(feature.properties);
 
@@ -119,14 +205,9 @@ $(function(){
                 inFormat:"kvp",
                 key:"Fmjtd|luua2q6and,aa=o5-hzb59",
                 boundingBox:"37.816,-122.536,37.693,-122.340",
-                location:$("#address").val() + ', San Francisco'};
-
-    $.ajax(url, {data:data, dataType:"jsonp", success:function(data){
-      console.log(data)
-      //TODO: check for errors
-      map.panTo([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
-
-    }});
+                location:$("#address").val() + ', ' + __default.city_name};
+    
+    $.ajax(url, {data: data, dataType: 'jsonp', success: onAddressFound});
 
   });
 
