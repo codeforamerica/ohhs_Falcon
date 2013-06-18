@@ -9,6 +9,23 @@ $(function(){
 
   map.addLayer(mapquest);
   
+  function boundedSetView(center)
+  {
+    var bounds = [37.816, -122.536, 37.693, -122.340];
+    
+    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
+    {
+        // found location is outside of San Francisco, so we will not set the view.
+        return alert("You were about to look outside of San Francisco - try searching for an address inside the city?");
+    }
+    
+    map.setView(center, 18);
+  }
+  
+  //
+  // Callback function for browser geolocation.
+  // http://leafletjs.com/reference.html#map-locate
+  //
   function onLocationFound(location)
   {
     var ne = location.bounds._northEast,
@@ -23,15 +40,19 @@ $(function(){
         return alert("couldn't locate you with sufficient accuracy");
     }
     
-    if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
-    {
-        // found location is outside of San Francisco, so we will not set the view.
-        return alert("You are currently outside of San Francisco - try searching for an address inside the city?");
-    }
-    
-    map.setView(center, 18);
+    return boundedSetView(center);
   }
   
+  //
+  // Callback function for geocode results from Mapquest Open.
+  // http://open.mapquestapi.com/geocoding/
+  //
+  function onAddressFound(response)
+  {
+    var center = response.results[0].locations[0].latLng;
+    return boundedSetView(center);
+  }
+
   map.on('locationfound', onLocationFound);
   map.locate({setView: false, maxZoom: 19});
 
@@ -85,13 +106,8 @@ $(function(){
                 key:"Fmjtd|luua2q6and,aa=o5-hzb59",
                 boundingBox:"37.816,-122.536,37.693,-122.340",
                 location:$("#address").val() + ', San Francisco'};
-
-    $.ajax(url, {data:data, dataType:"jsonp", success:function(data){
-      console.log(data)
-      //TODO: check for errors
-      map.panTo([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
-
-    }});
+    
+    $.ajax(url, {data: data, dataType: 'jsonp', success: onAddressFound});
 
   });
 
