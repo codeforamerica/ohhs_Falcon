@@ -78,7 +78,7 @@ $(function(){
 
       layer.on("click", function(){
         
-        map.panTo(layer._latlng)
+        //map.panTo(layer._latlng)
 
         var infoString = '<div>';
         for (var k in feature.properties) {
