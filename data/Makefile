@@ -5,7 +5,8 @@ venv-ohhs-map/bin/activate: requirements.txt
 	. venv-ohhs-map/bin/activate; pip install -Ur requirements.txt
 	touch venv-ohhs-map/bin/activate
 
-Parcel.geojson:
-	curl -OL "http://data.codeforamerica.org/OHHS/SF/1.2/Parcel.{dbf,prj,shp,shx}"
-	ogr2ogr -t_srs EPSG:4326 -f GeoJSON Parcel.geojson Parcel.shp
-	rm Parcel.dbf Parcel.prj Parcel.shp Parcel.shx
+Parcel.geojson: Parcel.shp
+	ogr2ogr -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION=7 -lco WRITE_BBOX=YES Parcel.geojson Parcel.shp
+
+Parcel.shp:
+	curl --compress -OL "http://data.codeforamerica.org/OHHS/SF/1.2/Parcel.{dbf,prj,shp,shx}"
