@@ -1,4 +1,4 @@
-Copyright (c) 2012, Glen Robertson
+/*Copyright (c) 2012, Glen Robertson
 All rights reserved. 
 
 Redistribution and use in source and binary forms, with or without modification, are 
@@ -20,7 +20,7 @@ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRU
 HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR 
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+*/
 // Load data tiles using the JQuery ajax function
 L.TileLayer.Ajax = L.TileLayer.extend({
     _requests: [],

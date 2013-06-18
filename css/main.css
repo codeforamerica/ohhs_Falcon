@@ -1,4 +1,7 @@
 #map { 
-  height: 1000px; 
+  height: 230px; 
   width:100%; 
+}
+#housinginfo{ 
+  padding:10px;
 }

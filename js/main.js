@@ -27,15 +27,20 @@ $(function(){
   }, {
     style: style,
     onEachFeature: function (feature, layer) {
-      if (feature.properties) {
-        var popupString = '<div class="popup">';
+
+      layer.on("click", function(){
+        
+        var infoString = '<div>';
         for (var k in feature.properties) {
           var v = feature.properties[k];
-          popupString += k + ': ' + v + '<br />';
+          infoString += k + ': ' + v + '<br />';
         }
-        popupString += '</div>';
-        layer.bindPopup(popupString);
-      }
+        infoString += '</div>';
+        $("div#housinginfo").html(infoString);
+        
+        console.log(feature)
+
+      });
     }
   });
   map.addLayer(geojsonTileLayer);
