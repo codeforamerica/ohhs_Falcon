@@ -4,7 +4,8 @@ var __defaults = {
     city_name: 'San Francisco',
     data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
     bounds: [37.816, -122.536, 37.693, -122.340],
-    center: [37.767745, -122.441475]
+    center: [37.767745, -122.441475],
+    mapquest_key: "Fmjtd|luua2q6and,aa=o5-hzb59"
     };
 
 //
@@ -203,7 +204,7 @@ $(function(){
 
     var data = {outFormat:"json",
                 inFormat:"kvp",
-                key:"Fmjtd|luua2q6and,aa=o5-hzb59",
+                key:defaults.mapquest_key,
                 boundingBox:"37.816,-122.536,37.693,-122.340",
                 location:$("#address").val() + ', ' + __default.city_name};
     
