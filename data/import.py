@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from itertools import product
 from os import makedirs
 from json import dump
@@ -86,6 +87,7 @@ if __name__ == '__main__':
         
         with open('tiles/%(zoom)d/%(column)d/%(row)d.json' % coord.__dict__, 'w') as out:
             features = [dict(
+                            id=p['id'],
                             type='Feature',
                             properties=p,
                             geometry=dict(
