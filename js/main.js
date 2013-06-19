@@ -119,7 +119,7 @@ var falcon = {
     detailHTML += "<div class='ownername'>"+building.owner_name+"</div>";
     detailHTML += "<div class='propertyid'>Property Id: "+building.id+"</div>";
     detailHTML += "<div class='inspections'> This building has been inspected "+building.inspections.length+" times, most recently June 2012</div>";
-    detailHTML += "<div class='violations'>There have been "+totalViolations+" violations: <ul>"
+    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been "+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+": <ul>"
     for(i in building.inspections){
       var insp = building.inspections[i];
       if(insp.violations.length === 0)
@@ -127,14 +127,22 @@ var falcon = {
       var violationString = "";
       for(v in insp.groupedViolations){
         var vio = insp.groupedViolations[v];
-        violationString += " "+ vio.count+" "+vio.category + " (" + vio.type + ") violation was found, ";
+        violationString += " "+ vio.count+" "+vio.category + " (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
-          violationString += " and was closed "+ vio.date_closed;
+          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
         else
-          violationString+= " and was never resolved."
+          violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
       }
 
-      detailHTML += "<li> During a routine inspection in "+insp.date+", "+violationString+"</li>"
+      detailHTML += "<li>";
+
+      if(insp.type === "Complaint")
+        detailHTML += "During an inspection due to a complaint on ";
+      else if(insp.type === "Routine")
+        detailHTML += "During a routine inspection on";
+      else if(insp.type === "Followup")
+        detailHTML += "<li> During a followup inspection on ";
+      detailHTML += insp.date+ " "+ violationString+"</li>"
       
     }
 
