@@ -19,18 +19,52 @@
 	font-size: 18px;
 }
 
+/* overrides Safari from making the the text field and button round */
+input {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0px;
+}
+
 #addressentry{ 
-  margin:5px;
+  padding: 10px 0 10px 10px;
+	background: #eee;
 }
 
 #address{ 
   width:80%;
-  padding:5px 0px; 
+	padding: 6px 0px;
+	border: none;
 }
 
 #submitaddress{ 
   width:50px;
-  height:33px;
+  height:32px;
   margin-left:5px;
+  background: #FD8E25;
+	border: none;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  padding-left: 5px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+:-ms-input-placeholder {  
+  font-style: italic;
+  margin-left: 5px;
 }
 
