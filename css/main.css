@@ -2,8 +2,21 @@
   height: 230px; 
   width:100%; 
 }
+
 #housinginfo{ 
   padding:10px;
+}
+
+#housinginfo div {
+	padding: 8px 0px;
+}
+
+#housinginfo span {
+	font-weight: bold;
+}
+
+#housinginfo .address span {
+	font-size: 18px;
 }
 
 #addressentry{ 
@@ -12,11 +25,12 @@
 
 #address{ 
   width:80%;
-  padding:5px 0px;
-  
+  padding:5px 0px; 
 }
+
 #submitaddress{ 
   width:50px;
   height:33px;
   margin-left:5px;
 }
+
