@@ -115,11 +115,11 @@ var falcon = {
     }
     
 
-    var detailHTML = "<div class='address'>"+address+"</div>";
-    detailHTML += "<div class='ownername'>"+building.owner_name+"</div>";
-    detailHTML += "<div class='propertyid'>Property Id: "+building.id+"</div>";
-    detailHTML += "<div class='inspections'> This building has been inspected "+building.inspections.length+" times, most recently June 2012</div>";
-    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been "+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+": <ul>"
+    var detailHTML = "<div class='address'><span>"+address+"</span></div>";
+    detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name+"</div>";
+    detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
+    detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>, most recently June 2012</div>";
+    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+": </span><ul>"
     for(i in building.inspections){
       var insp = building.inspections[i];
       if(insp.violations.length === 0)
@@ -151,8 +151,8 @@ var falcon = {
     detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type+" with "+
       building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
     
-    detailHTML += "<div class='ownercontact'>Contact the owner at "+building.owner_mailing_address+"</div>";
-    detailHTML += "<div class='contactinfo'>SFDPH Contact Info</div>"
+    detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address+"</div>";
+    detailHTML += "<div class='contactinfo'><span>SFDPH Contact Info:</span><br />25 Van Ness Ave #500<br /> San Francisco, CA 94102<br />(415) 554-2500</div>"
     
     $("div#housinginfo").html(detailHTML);
 

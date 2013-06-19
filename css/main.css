@@ -1,22 +1,90 @@
+html,
+button,
+input,
+select,
+textarea {
+	font-family: 'Open Sans', sans-serif;
+}
+
+#header {
+	height: 46px;
+	background: #19A89D;
+}
+
+#header img {
+	width: 116px;
+	margin: 0px auto;
+	display: block;
+	padding: 6px 0px;
+}
+
 #map { 
   height: 230px; 
   width:100%; 
 }
+
 #housinginfo{ 
   padding:10px;
 }
 
-#addressentry{ 
-  margin:5px;
+#housinginfo div {
+	padding: 8px 0px;
 }
 
-#address{ 
+#housinginfo span {
+	font-weight: bold;
+}
+
+#housinginfo .address span {
+	font-size: 18px;
+}
+
+/* overrides Safari from making the the text field and button round */
+input {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0px;
+}
+
+#addressentry { 
+  padding: 10px 0 10px 10px;
+	background: #eee;
+}
+
+#address { 
   width:80%;
-  padding:5px 0px;
-  
+	padding: 6px 0px;
+	border: none;
 }
-#submitaddress{ 
+
+#submitaddress { 
   width:50px;
-  height:33px;
+  height:32px;
   margin-left:5px;
+  background: #FD8E25;
+	border: none;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
 }
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  padding-left: 5px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+:-ms-input-placeholder {  
+  font-style: italic;
+  margin-left: 5px;
+}
+
