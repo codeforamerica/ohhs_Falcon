@@ -209,7 +209,6 @@ $(function(){
         layer.setIcon(buildingIconActive);
 
       layer.on("click", function(){
-        map.panTo(layer._latlng);
         falcon.showBuildingDetails(feature.properties);
 
 
