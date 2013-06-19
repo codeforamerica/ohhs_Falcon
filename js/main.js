@@ -184,17 +184,39 @@ $(function(){
   }
 
   var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
+  var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
+                             iconRetinaUrl: 'img/falcon_map_marker@2x.png',
+                             iconSize: [31, 41],
+                             iconAnchor: [14, 41]});
+  var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
+                             iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
+                             iconSize: [31, 41],
+                             iconAnchor: [14, 41]});
+
+  var activeMarker = null;
+
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
     maxZoom:20
   }, {
+    pointToLayer: function(feature, latlng){
+
+      return L.marker(latlng, {icon:buildingIcon});
+    },
     onEachFeature: function (feature, layer) {
+
+      if(activeMarker == layer)
+        layer.setIcon(buildingIconActive);
 
       layer.on("click", function(){
         map.panTo(layer._latlng);
         falcon.showBuildingDetails(feature.properties);
-        console.log(feature, layer)
 
+
+        if(activeMarker)
+          activeMarker.setIcon(buildingIcon);
+        this.setIcon(buildingIconActive);
+        activeMarker = this;
       });
     }
   });
