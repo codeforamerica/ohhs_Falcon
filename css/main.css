@@ -7,15 +7,15 @@ textarea {
 }
 
 #header {
-	height: 46px;
+	height: 41px;
 	background: #19A89D;
 }
 
 #header img {
-	width: 116px;
+	width: 150px;
 	margin: 0px auto;
 	display: block;
-	padding: 6px 0px;
+	padding: 7px 0px;
 }
 
 #map { 
