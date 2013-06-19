@@ -89,7 +89,7 @@ var falcon = {
     else
       address += building.from_street_num + "-"+ building.to_street_num
 
-    address += " "+building.street +" "+ building.st_type+". "+ building.city+", "+ building.state + " "+  building.postal_code;
+    address += " "+building.street +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
 
     
     var totalViolations = 0,
@@ -127,7 +127,7 @@ var falcon = {
       var violationString = "";
       for(v in insp.groupedViolations){
         var vio = insp.groupedViolations[v];
-        violationString += " "+ vio.count+" "+vio.category + " (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
+        violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
           violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
         else
