@@ -63,7 +63,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
         if(this._map.getZoom() >= 17){
             var zoomDiff = this._map.getZoom() - 17;
             var zoom = (this._map.getZoom() > 17 ? 17 : this._map.getZoom())
-            var newPoint = {x: Math.floor(tilePoint.x / Math.pow(2, zoomDiff)), y: Math.floor(tilePoint.y / Math.pow(2, zoomDiff)), z: zoom};
+            var newPoint = {x: Math.round(tilePoint.x / Math.pow(2, zoomDiff)), y: Math.round(tilePoint.y / Math.pow(2, zoomDiff)), z: zoom};
             if(newPoint.x+":"+newPoint.y+":"+newPoint.z  in this.loadedTiles){
                 this._tilesToLoad--;
                 return;
@@ -150,7 +150,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                     for (var f in tileDatum.features) {
                         var featureKey = this.options.unique(tileDatum.features[f]);
                         if (this._uniqueKeys.hasOwnProperty(featureKey)) {
-                            delete tileDatum.features[f];
+                          tileDatum.features.splice(f, 1);
                         }
                         else {
                             this._uniqueKeys[featureKey] = featureKey;
@@ -169,7 +169,6 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     },
     _tilesLoaded: function (evt) {
       var data = this.data();
-      console.log("tilesloaded", data);
       this.geojsonLayer.clearLayers().addData(data);
     }
 });

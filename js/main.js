@@ -18,7 +18,7 @@ function boundedSetView(center)
     if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
     {
         // found location is outside of default city, so we will not set the view.
-        return alert("You were about to look outside of "+__default.city_name+" - try searching for an address inside the city?");
+        return alert("You were about to look outside of "+__defaults.city_name+" - try searching for an address inside the city?");
     }
     
     map.setView(center, 18);
@@ -209,7 +209,6 @@ $(function(){
         layer.setIcon(buildingIconActive);
 
       layer.on("click", function(){
-        map.panTo(layer._latlng);
         falcon.showBuildingDetails(feature.properties);
 
 
@@ -230,9 +229,9 @@ $(function(){
 
     var data = {outFormat:"json",
                 inFormat:"kvp",
-                key:defaults.mapquest_key,
+                key:__defaults.mapquest_key,
                 boundingBox:"37.816,-122.536,37.693,-122.340",
-                location:$("#address").val() + ', ' + __default.city_name};
+                location:$("#address").val() + ', ' + __defaults.city_name};
     
     $.ajax(url, {data: data, dataType: 'jsonp', success: onAddressFound});
 
