@@ -78,6 +78,39 @@ function onBuildingLoaded(building)
     boundedSetView(new L.LatLng(building.latitude, building.longitude));
 }
 
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+
+/*
+ * JavaScript Pretty Date
+ * Copyright (c) 2011 John Resig (ejohn.org)
+ * Licensed under the MIT and GPL licenses.
+ */
+
+function prettyDate(time){
+	var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
+		diff = (((new Date()).getTime() - date.getTime()) / 1000),
+		day_diff = Math.floor(diff / 86400);
+			
+	if ( isNaN(day_diff) || day_diff < 0 )
+		return;
+			
+	return day_diff == 0 && (
+			diff < 60 && "just now" ||
+			diff < 120 && "1 minute ago" ||
+			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+			diff < 7200 && "1 hour ago" ||
+			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+		day_diff == 1 && "Yesterday" ||
+		day_diff < 7 && day_diff + " days ago" ||
+		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
+		day_diff < 730 && Math.ceil( day_diff / 30 ) + " months ago" ||
+		day_diff > 730 && Math.floor( day_diff / 365 ) + " years ago";
+}
+
+
 var falcon = {
 
   showBuildingDetails:function(building){
@@ -89,7 +122,7 @@ var falcon = {
     else
       address += building.from_street_num + "-"+ building.to_street_num
 
-    address += " "+building.street +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
+    address += " "+building.street.toProperCase() +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
 
     
     var totalViolations = 0,
@@ -102,7 +135,12 @@ var falcon = {
       var insp = building.inspections[i];
       if(!insp.violations)
         insp.violations =[];
-      console.log(insp);
+      insp.date = new Date(insp.date);
+      console.log("date", insp.date);
+      if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
+        recentInspectionDate = insp.date
+      
+
       totalViolations += insp.violations.length;
       insp.groupedViolations = {};
       for(v in insp.violations){
@@ -116,42 +154,50 @@ var falcon = {
     
 
     var detailHTML = "<div class='address'><span>"+address+"</span></div>";
-    detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name+"</div>";
+    detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
     detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
-    detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>, most recently June 2012</div>";
-    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+": </span><ul>"
-    for(i in building.inspections){
-      var insp = building.inspections[i];
-      if(insp.violations.length === 0)
-        continue;
-      var violationString = "";
-      for(v in insp.groupedViolations){
-        var vio = insp.groupedViolations[v];
-        violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
-        if(vio.date_closed)
-          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
-        else
-          violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
+    detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
+
+    if(building.inspections.length > 0)
+      detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
+      (totalViolations > 0 ? ":" : "s.")+" </span>";
+
+    if(totalViolations > 0){
+      detailHTML += "<ul>"
+      for(i in building.inspections){
+        var insp = building.inspections[i];
+        if(insp.violations.length === 0)
+          continue;
+        var violationString = "";
+        for(v in insp.groupedViolations){
+          var vio = insp.groupedViolations[v];
+          violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
+          if(vio.date_closed)
+            violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
+          else
+            violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
+        }
+
+        detailHTML += "<li>";
+
+        if(insp.type === "Complaint")
+          detailHTML += "During an inspection due to a complaint ";
+        else if(insp.type === "Routine")
+          detailHTML += "During a routine inspection";
+        else if(insp.type === "Followup")
+          detailHTML += "<li> During a followup inspection ";
+        detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+"</li>"
+        
       }
 
-      detailHTML += "<li>";
-
-      if(insp.type === "Complaint")
-        detailHTML += "During an inspection due to a complaint on ";
-      else if(insp.type === "Routine")
-        detailHTML += "During a routine inspection on";
-      else if(insp.type === "Followup")
-        detailHTML += "<li> During a followup inspection on ";
-      detailHTML += insp.date+ " "+ violationString+"</li>"
-      
+      detailHTML += "</ul>";
     }
-
-    detailHTML += "</ul></div>"
+    detailHTML +="</div>";
     
-    detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type+" with "+
+    detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type.toLowerCase()+" with "+
       building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
     
-    detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address+"</div>";
+    detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address.toProperCase()+"</div>";
     detailHTML += "<div class='contactinfo'><span>SFDPH Contact Info:</span><br />25 Van Ness Ave #500<br /> San Francisco, CA 94102<br />(415) 554-2500</div>"
     
     $("div#housinginfo").html(detailHTML);
