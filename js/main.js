@@ -257,6 +257,7 @@ $(function(){
       layer.on("click", function(){
         falcon.showBuildingDetails(feature.properties);
 
+        $('#about').hide();
 
         if(activeMarker)
           activeMarker.setIcon(buildingIcon);
