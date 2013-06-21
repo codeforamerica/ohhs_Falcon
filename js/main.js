@@ -110,101 +110,102 @@ function prettyDate(time){
 		day_diff > 730 && Math.floor( day_diff / 365 ) + " years ago";
 }
 
+//
+//  Munges an object with building details, into a string of HTML
+//
 
-var falcon = {
+function getBuildingDetailsHTML(building){
 
-  showBuildingDetails:function(building){
+  var address = "";
 
-    var address = "";
+  if(building.from_street_num === building.to_street_num)
+    address += building.from_street_num;
+  else
+    address += building.from_street_num + "-"+ building.to_street_num
 
-    if(building.from_street_num === building.to_street_num)
-      address += building.from_street_num;
-    else
-      address += building.from_street_num + "-"+ building.to_street_num
+  address += " "+building.street.toProperCase() +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
 
-    address += " "+building.street.toProperCase() +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
+  
+  var totalViolations = 0,
+  recentInspectionDate = null;
 
+  if(!building.inspections)
+    building.inspections = [];
+
+  for(i in building.inspections){
+    var insp = building.inspections[i];
+    if(!insp.violations)
+      insp.violations =[];
+    insp.date = new Date(insp.date);
+
+    if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
+      recentInspectionDate = insp.date
     
-    var totalViolations = 0,
-        recentInspectionDate = null;
 
-    if(!building.inspections)
-      building.inspections = [];
+    totalViolations += insp.violations.length;
+    insp.groupedViolations = {};
+    for(v in insp.violations){
+      var vio = insp.violations[v];
+      if(vio.category+":"+vio.type in insp.groupedViolations)
+        insp.groupedViolations[vio.category+":"+vio.type].count +=1;
+      else
+        insp.groupedViolations[vio.category+":"+vio.type] = {count:1, type:vio.type, category:vio.category, date_closed:vio.date_closed};
+    }
+  }
+  
 
+  var detailHTML = "<div class='address'><span>"+address+"</span></div>";
+  detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
+  detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
+  detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
+
+  if(building.inspections.length > 0)
+    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
+    (totalViolations > 0 ? ":" : "s.")+" </span>";
+
+  if(totalViolations > 0){
+    detailHTML += "<ul>"
     for(i in building.inspections){
       var insp = building.inspections[i];
-      if(!insp.violations)
-        insp.violations =[];
-      insp.date = new Date(insp.date);
-
-      if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
-        recentInspectionDate = insp.date
-      
-
-      totalViolations += insp.violations.length;
-      insp.groupedViolations = {};
-      for(v in insp.violations){
-        var vio = insp.violations[v];
-        if(vio.category+":"+vio.type in insp.groupedViolations)
-          insp.groupedViolations[vio.category+":"+vio.type].count +=1;
+      if(insp.violations.length === 0)
+        continue;
+      var violationString = "";
+      for(v in insp.groupedViolations){
+        var vio = insp.groupedViolations[v];
+        violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
+        if(vio.date_closed)
+          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
         else
-          insp.groupedViolations[vio.category+":"+vio.type] = {count:1, type:vio.type, category:vio.category, date_closed:vio.date_closed};
-      }
-    }
-    
-
-    var detailHTML = "<div class='address'><span>"+address+"</span></div>";
-    detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
-    detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
-    detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
-
-    if(building.inspections.length > 0)
-      detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
-      (totalViolations > 0 ? ":" : "s.")+" </span>";
-
-    if(totalViolations > 0){
-      detailHTML += "<ul>"
-      for(i in building.inspections){
-        var insp = building.inspections[i];
-        if(insp.violations.length === 0)
-          continue;
-        var violationString = "";
-        for(v in insp.groupedViolations){
-          var vio = insp.groupedViolations[v];
-          violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
-          if(vio.date_closed)
-            violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
-          else
-            violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
-        }
-
-        detailHTML += "<li>";
-
-        if(insp.type === "Complaint")
-          detailHTML += "During an inspection due to a complaint ";
-        else if(insp.type === "Routine")
-          detailHTML += "During a routine inspection";
-        else if(insp.type === "Followup")
-          detailHTML += "<li> During a followup inspection ";
-        detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+"</li>"
-        
+          violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
       }
 
-      detailHTML += "</ul>";
-    }
-    detailHTML +="</div>";
-    
-    detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type.toLowerCase()+" with "+
-      building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
-    
-    detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address.toProperCase()+"</div>";
-    detailHTML += "<div class='contactinfo'><span>SFDPH Contact Info:</span><br />25 Van Ness Ave #500<br /> San Francisco, CA 94102<br />(415) 554-2500</div>"
-    
-    $("div#housinginfo").html(detailHTML);
+      detailHTML += "<li>";
 
+      if(insp.type === "Complaint")
+        detailHTML += "During an inspection due to a complaint ";
+      else if(insp.type === "Routine")
+        detailHTML += "During a routine inspection";
+      else if(insp.type === "Followup")
+        detailHTML += "<li> During a followup inspection ";
+      detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+"</li>"
+      
+    }
+
+    detailHTML += "</ul>";
   }
+  detailHTML +="</div>";
+  
+  detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type.toLowerCase()+" with "+
+    building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
+  
+  detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address.toProperCase()+"</div>";
+  detailHTML += "<div class='contactinfo'><span>SFDPH Contact Info:</span><br />25 Van Ness Ave #500<br /> San Francisco, CA 94102<br />(415) 554-2500</div>"
 
-};
+  return detailHTML;
+  
+}
+
+
 
 
 $(function(){
@@ -273,7 +274,7 @@ $(function(){
         layer.setIcon(buildingIconViolation);
 
       layer.on("click", function(){
-        falcon.showBuildingDetails(feature.properties);
+          $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
 
 
         if(activeMarker){
