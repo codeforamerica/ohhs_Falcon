@@ -114,7 +114,7 @@ function prettyDate(time){
 var falcon = {
 
   showBuildingDetails:function(building){
-    console.log("details", building);
+
     var address = "";
 
     if(building.from_street_num === building.to_street_num)
@@ -136,7 +136,7 @@ var falcon = {
       if(!insp.violations)
         insp.violations =[];
       insp.date = new Date(insp.date);
-      console.log("date", insp.date);
+
       if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
         recentInspectionDate = insp.date
       
@@ -235,11 +235,26 @@ $(function(){
                              iconSize: [31, 41],
                              iconAnchor: [14, 41]});
   var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
-                             iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
-                             iconSize: [31, 41],
-                             iconAnchor: [14, 41]});
+                                   iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
+                                   iconSize: [31, 41],
+                                   iconAnchor: [14, 41]});
+  var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
+                                      iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
+                                      iconSize: [31, 41],
+                                      iconAnchor: [14, 41]});
+
 
   var activeMarker = null;
+
+
+  function hasViolations(building){
+    for(i in building.inspections){
+      for(v in building.inspections[i].violations){
+        return true;
+      }
+    }
+    return false;
+  }
 
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
@@ -254,12 +269,18 @@ $(function(){
       if(activeMarker == layer)
         layer.setIcon(buildingIconActive);
 
+      if(hasViolations(feature.properties))
+        layer.setIcon(buildingIconViolation);
+
       layer.on("click", function(){
         falcon.showBuildingDetails(feature.properties);
 
 
-        if(activeMarker)
+        if(activeMarker){
           activeMarker.setIcon(buildingIcon);
+          if(hasViolations(activeMarker.feature.properties))
+            activeMarker.setIcon(buildingIconViolation);
+        }
         this.setIcon(buildingIconActive);
         activeMarker = this;
       });
