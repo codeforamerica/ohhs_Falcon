@@ -83,6 +83,18 @@ String.prototype.toProperCase = function () {
 };
 
 
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
+
 /*
  * JavaScript Pretty Date
  * Copyright (c) 2011 John Resig (ejohn.org)
@@ -123,7 +135,7 @@ function getBuildingDetailsHTML(building){
   else
     address += building.from_street_num + "-"+ building.to_street_num
 
-  address += " "+building.street.toProperCase() +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
+  address += " "+building.street.toProperCase() +" "+ building.st_type.toProperCase()+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
 
   
   var totalViolations = 0,
@@ -174,7 +186,8 @@ function getBuildingDetailsHTML(building){
         var vio = insp.groupedViolations[v];
         violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
-          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ vio.date_closed;
+          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ prettyDate((new Date(vio.date_closed)).toISOString());
+        
         else
           violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
       }
@@ -186,8 +199,8 @@ function getBuildingDetailsHTML(building){
       else if(insp.type === "Routine")
         detailHTML += "During a routine inspection";
       else if(insp.type === "Followup")
-        detailHTML += "<li> During a followup inspection ";
-      detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+"</li>"
+        detailHTML += "During a followup inspection ";
+      detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+".</li>"
       
     }
 
@@ -195,8 +208,12 @@ function getBuildingDetailsHTML(building){
   }
   detailHTML +="</div>";
   
-  detailHTML += "<div class='details'>The building is a "+building.sqft+" sqft "+ building.type.toLowerCase()+" with "+
-    building.dwelling_units+" units built in "+ building.built_year+", currently assessed at $"+building.value+".</div>"; 
+  detailHTML += "<div class='details'><h4>Building Details</h4> <ul> "+
+    "<li>"+building.sqft+" sqft </li>"+ 
+    "<li>"+building.type.toLowerCase()+" </li> "+
+    "<li>"+building.dwelling_units+" unit"+(building.dwelling_units == 1 ? "" : "s")+"</li>"+ 
+    "<li>"+building.built_year+"</li>"+
+    "<li>Assessed Value: $"+parseInt(building.value).formatMoney()+"</li></ul></div>"; 
   
   detailHTML += "<div class='ownercontact'><span>Contact the Owner:</span><br />"+building.owner_mailing_address.toProperCase()+"</div>";
   detailHTML += "<div class='contactinfo'><span>SFDPH Contact Info:</span><br />25 Van Ness Ave #500<br /> San Francisco, CA 94102<br />(415) 554-2500</div>"

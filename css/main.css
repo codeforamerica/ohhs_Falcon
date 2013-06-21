@@ -35,7 +35,14 @@ a:hover {
 #housinginfo{ 
   padding:10px;
 }
+#housinginfo h4{ 
+  margin:0px 0px;
+}
 
+#housinginfo em{ 
+  font-weight:bold;
+  font-style:normal;
+}
 #housinginfo div {
 	padding: 8px 0px;
 }
