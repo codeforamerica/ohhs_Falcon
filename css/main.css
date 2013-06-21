@@ -6,6 +6,15 @@ textarea {
 	font-family: 'Open Sans', sans-serif;
 }
 
+a {
+	color: #FD8E25;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #FFC145;
+}
+
 #header {
 	height: 41px;
 	background: #19A89D;
@@ -93,6 +102,16 @@ input {
   margin-left: 5px;
 }
 
+#sampleaddresses {
+	font-size: 12px;
+	font-style: italic;
+	padding: 0 20px;
+}
+
+#sampleaddresses p {
+	margin-top: 5px;
+}
+
 #about {
 	padding: 0 20px 20px;
 }
@@ -103,13 +122,4 @@ input {
 
 #about p {
 	margin: 0px 0px 15px;
-}
-
-#about a {
-	color: #FD8E25;
-	font-weight: bold;
-}
-
-#about a:hover {
-	color: #FFC145;
 }
