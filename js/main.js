@@ -148,7 +148,7 @@ function getBuildingDetailsHTML(building){
     var insp = building.inspections[i];
     if(!insp.violations)
       insp.violations =[];
-    insp.date = new Date(insp.date);
+    insp.date = new Date(insp.date.substr(0,4), insp.date.substr(5,2), insp.date.substr(8,2));
 
     if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
       recentInspectionDate = insp.date
