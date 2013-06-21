@@ -69,6 +69,10 @@ input {
 	padding: 0px;
 }
 
+#submitaddress:hover {
+	background: #FFC145;	
+}
+
 ::-webkit-input-placeholder {
   font-style: italic;
   padding-left: 5px;
@@ -93,3 +97,19 @@ input {
 	padding: 0 20px 20px;
 }
 
+#about h3 {
+	margin-bottom: 12px;
+}
+
+#about p {
+	margin: 0px 0px 15px;
+}
+
+#about a {
+	color: #FD8E25;
+	font-weight: bold;
+}
+
+#about a:hover {
+	color: #FFC145;
+}
