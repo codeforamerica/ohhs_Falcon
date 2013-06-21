@@ -274,9 +274,10 @@ $(function(){
         layer.setIcon(buildingIconViolation);
 
       layer.on("click", function(){
-          $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
-
-
+        $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
+        
+        location.hash = "#"+feature.properties.id;
+        
         if(activeMarker){
           activeMarker.setIcon(buildingIcon);
           if(hasViolations(activeMarker.feature.properties))
