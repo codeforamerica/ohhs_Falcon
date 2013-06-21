@@ -49,17 +49,17 @@ if __name__ == '__main__':
 
     print 'Getting violations...'
 
-    violations_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Violations.csv'
+    violations_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/Olathe-KS/violations.csv'
     violations = load_violations(violations_url)
 
     print 'Getting inspections...'
 
-    inspections_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Inspections.csv'
+    inspections_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/Olathe-KS/inspections.csv'
     inspections = load_inspections(inspections_url)
 
     print 'Getting buildings...'
 
-    buildings_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Buildings.csv'
+    buildings_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/Olathe-KS/building.csv'
     buildings = load_buildings(buildings_url)
     
     print 'Matching inspection violations...'

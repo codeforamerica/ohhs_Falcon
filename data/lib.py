@@ -58,7 +58,6 @@ def load_buildings(url):
     buildings = dict()
     
     for row in csv:
-        del row['ID'] # useless spreadsheet row
         row.update(dict(building_latitude=float(row['building_latitude'])))
         row.update(dict(building_longitude=float(row['building_longitude'])))
         buildings[row['building_id']] = strip_keys(row, 'building_')
