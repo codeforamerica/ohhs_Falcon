@@ -5,8 +5,8 @@ venv-ohhs-map/bin/activate: requirements.txt
 	. venv-ohhs-map/bin/activate; pip install -Ur requirements.txt
 	touch venv-ohhs-map/bin/activate
 
-Parcel.geojson: Parcel.shp
-	ogr2ogr -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION=7 -lco WRITE_BBOX=YES Parcel.geojson Parcel.shp
+Parcel.geojson: parcel.shp
+	ogr2ogr -overwrite -skipfailures -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION=7 -lco WRITE_BBOX=YES Parcel.geojson parcel.shp
 
-Parcel.shp:
-	curl -OL "http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Parcel.{dbf,prj,shp,shx}"
+parcel.shp:
+	curl -OL "http://s3.amazonaws.com/data.codeforamerica.org/OHHS/Olathe-KS/parcel.{dbf,prj,shp,shx}"

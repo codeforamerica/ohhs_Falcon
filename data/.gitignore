@@ -1,8 +1,8 @@
 venv-ohhs-map
-Parcel.dbf
-Parcel.prj
-Parcel.shp
-Parcel.shx
+parcel.dbf
+parcel.prj
+parcel.shp
+parcel.shx
 Parcel.geojson
 tiles
 buildings
