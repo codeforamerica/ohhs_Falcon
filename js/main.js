@@ -289,8 +289,11 @@ $(function(){
 
       if(hasViolations(feature.properties))
         layer.setIcon(buildingIconViolation);
+        
 
       layer.on("click", function(){
+        $('#about').hide();
+
         $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
         
         location.hash = "#"+feature.properties.id;
