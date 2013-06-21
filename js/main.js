@@ -135,7 +135,7 @@ function getBuildingDetailsHTML(building){
   else
     address += building.from_street_num + "-"+ building.to_street_num
 
-  address += " "+building.street.toProperCase() +" "+ building.st_type+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
+  address += " "+building.street.toProperCase() +" "+ building.st_type.toProperCase()+". <br />"+ building.city+", "+ building.state + " "+  building.postal_code;
 
   
   var totalViolations = 0,
