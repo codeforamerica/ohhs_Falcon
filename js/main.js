@@ -1,5 +1,6 @@
 var map;
-
+var markers = [];
+var fromAddressSearch =false;
 var __defaults = {
     city_name: 'San Francisco',
     data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
@@ -50,9 +51,96 @@ function onLocationFound(location)
 //
 function onAddressFound(response)
 {
-    var center = response.results[0].locations[0].latLng;
-    return boundedSetView(center);
+  var center = response.results[0].locations[0].latLng;
+  fromAddressSearch = true;
+  boundedSetView(center);
+  showNearByBuilding(map.getCenter())
 }
+
+//
+//
+//
+
+function numberToRadius  (number) {
+  return number * Math.PI / 180;
+}
+
+// from http://www.movable-type.co.uk/scripts/latlong.html
+function distanceBetween(pt1, pt2){
+
+  var lon1 = pt1[0],
+  lat1 = pt1[1],
+  lon2 = pt2[0],
+  lat2 = pt2[1],
+  dLat = numberToRadius(lat2 - lat1),
+  dLon = numberToRadius(lon2 - lon1),
+  a = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(numberToRadius(lat1))
+    * Math.cos(numberToRadius(lat2)) * Math.pow(Math.sin(dLon / 2), 2),
+  c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return (6371 * c) * 1000; // returns meters
+}
+
+var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
+                           iconRetinaUrl: 'img/falcon_map_marker@2x.png',
+                           iconSize: [31, 41],
+                           iconAnchor: [14, 41]});
+var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
+                                 iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
+                                 iconSize: [31, 41],
+                                 iconAnchor: [14, 41]});
+var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
+                                    iconSize: [31, 41],
+                                    iconAnchor: [14, 41]});
+
+
+var activeMarker = null;
+
+
+function hasViolations(building){
+  for(i in building.inspections){
+    for(v in building.inspections[i].violations){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+//
+// 
+//
+
+function showNearByBuilding(center){
+
+  var shortestDistanceMarker =null;
+  var shortestDistance = null;
+
+  for(m in markers){
+    var marker = markers[m];
+    var dis = distanceBetween([marker.getLatLng().lat, marker.getLatLng().lng], [center.lat, center.lng])
+    if((shortestDistance == null )||(dis < shortestDistance)){
+      shortestDistance = dis;
+      shortestDistanceMarker = marker;
+    }
+  }
+  
+  $('#about').hide();
+
+  $("div#housinginfo").html(getBuildingDetailsHTML(shortestDistanceMarker.feature.properties));
+        
+  location.hash = "#"+shortestDistanceMarker.feature.properties.id;
+        
+  if(activeMarker){
+    activeMarker.setIcon(buildingIcon);
+    if(hasViolations(activeMarker.feature.properties))
+      activeMarker.setIcon(buildingIconViolation);
+  }
+  shortestDistanceMarker.setIcon(buildingIconActive);
+  activeMarker = shortestDistanceMarker;
+ 
+}
+
 
 //
 // Set up map, but don't set the view to anything.
@@ -148,10 +236,10 @@ function getBuildingDetailsHTML(building){
     var insp = building.inspections[i];
     if(!insp.violations)
       insp.violations =[];
-    insp.date = new Date(insp.date.substr(0,4), insp.date.substr(5,2), insp.date.substr(8,2));
+    insp.parsedDate = new Date(insp.date.substr(0,4), insp.date.substr(5,2), insp.date.substr(8,2));
 
-    if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
-      recentInspectionDate = insp.date
+    if((recentInspectionDate === null) ||( insp.parsedDate > recentInspectionDate))
+      recentInspectionDate = insp.parsedDate
     
 
     totalViolations += insp.violations.length;
@@ -170,7 +258,8 @@ function getBuildingDetailsHTML(building){
   detailHTML += "<div class='infoboxes'><div class='inspectbox'><div class='boxnumber'>"+building.inspections.length+"</div><p>inspections</p></div><div class='violationbox'><div class='boxnumber'>"+totalViolations+"</div><p>violations</p></div></div>"
   detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
   detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
-  detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
+  detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+
+    (building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
 
   if(building.inspections.length > 0)
     detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
@@ -187,7 +276,8 @@ function getBuildingDetailsHTML(building){
         var vio = insp.groupedViolations[v];
         violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
-          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ prettyDate((new Date(vio.date_closed)).toISOString());
+          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ 
+          prettyDate((new Date(vio.date_closed.substr(0,4), vio.date_closed.substr(5,2), vio.date_closed.substr(8,2)).toISOString()));
         
         else
           violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
@@ -201,7 +291,7 @@ function getBuildingDetailsHTML(building){
         detailHTML += "During a routine inspection";
       else if(insp.type === "Followup")
         detailHTML += "During a followup inspection ";
-      detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+".</li>"
+      detailHTML += prettyDate(insp.parsedDate.toISOString())+ " "+ violationString+".</li>"
       
     }
 
@@ -236,7 +326,7 @@ $(function(){
     //
     var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
         building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
-
+    
     $.ajax(building_url, {success: onBuildingLoaded})
 
   } else {
@@ -249,30 +339,21 @@ $(function(){
   }
 
   var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
-  var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
-                             iconRetinaUrl: 'img/falcon_map_marker@2x.png',
-                             iconSize: [31, 41],
-                             iconAnchor: [14, 41]});
-  var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
-                                   iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
-                                   iconSize: [31, 41],
-                                   iconAnchor: [14, 41]});
-  var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
-                                      iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
-                                      iconSize: [31, 41],
-                                      iconAnchor: [14, 41]});
 
+  function selectBuilding(feature, layer){
+    $('#about').hide();
 
-  var activeMarker = null;
+    $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
+        
+    location.hash = "#"+feature.properties.id;
 
-
-  function hasViolations(building){
-    for(i in building.inspections){
-      for(v in building.inspections[i].violations){
-        return true;
-      }
+    if(activeMarker){
+      activeMarker.setIcon(buildingIcon);
+      if(hasViolations(activeMarker.feature.properties))
+        activeMarker.setIcon(buildingIconViolation);
     }
-    return false;
+    layer.setIcon(buildingIconActive);
+    activeMarker = layer;
   }
 
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
@@ -290,25 +371,31 @@ $(function(){
 
       if(hasViolations(feature.properties))
         layer.setIcon(buildingIconViolation);
-        
+
+      if(location.hash.replace(/^#(\w+)$/, '$1') !== ""){
+        if(location.hash.replace(/^#(\w+)$/, '$1') == feature.properties.id){
+          selectBuilding(feature, layer);
+        }
+      }
+  
+      markers.push(layer);
 
       layer.on("click", function(){
-        $('#about').hide();
-
-        $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
-        
-        location.hash = "#"+feature.properties.id;
-        
-        if(activeMarker){
-          activeMarker.setIcon(buildingIcon);
-          if(hasViolations(activeMarker.feature.properties))
-            activeMarker.setIcon(buildingIconViolation);
-        }
-        this.setIcon(buildingIconActive);
-        activeMarker = this;
+        selectBuilding(feature, layer);
       });
     }
   });
+
+  geojsonTileLayer.on("load", function(a){
+
+    // if the loading of these tiles was triggered by an address search, 
+    // then we show the building nearest to the address (or at this point map center)
+
+    if(fromAddressSearch)
+      showNearByBuilding(map.getCenter())
+    fromAddressSearch = false;
+  });
+
   map.addLayer(geojsonTileLayer);
 
 
