@@ -274,7 +274,7 @@ function getBuildingDetailsHTML(building){
     (building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate)+".</div>" : ".");
 
   if(building.inspections.length > 0)
-    detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
+    detailHTML += "<div class='violations'>There "+ (totalViolations == 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
     (totalViolations > 0 ? ":" : "s.")+" </span>";
 
   if(totalViolations > 0){
