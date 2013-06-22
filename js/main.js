@@ -148,10 +148,10 @@ function getBuildingDetailsHTML(building){
     var insp = building.inspections[i];
     if(!insp.violations)
       insp.violations =[];
-    insp.date = new Date(insp.date.substr(0,4), insp.date.substr(5,2), insp.date.substr(8,2));
+    insp.parsedDate = new Date(insp.date.substr(0,4), insp.date.substr(5,2), insp.date.substr(8,2));
 
-    if((recentInspectionDate === null) ||( insp.date > recentInspectionDate))
-      recentInspectionDate = insp.date
+    if((recentInspectionDate === null) ||( insp.parsedDate > recentInspectionDate))
+      recentInspectionDate = insp.parsedDate
     
 
     totalViolations += insp.violations.length;
@@ -169,7 +169,8 @@ function getBuildingDetailsHTML(building){
   var detailHTML = "<div class='address'><span>"+address+"</span></div>";
   detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
   detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
-  detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
+  detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+
+    (building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
 
   if(building.inspections.length > 0)
     detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
@@ -186,7 +187,8 @@ function getBuildingDetailsHTML(building){
         var vio = insp.groupedViolations[v];
         violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
-          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ prettyDate((new Date(vio.date_closed)).toISOString());
+          violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ 
+          prettyDate((new Date(vio.date_closed.substr(0,4), vio.date_closed.substr(5,2), vio.date_closed.substr(8,2)).toISOString()));
         
         else
           violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
@@ -200,7 +202,7 @@ function getBuildingDetailsHTML(building){
         detailHTML += "During a routine inspection";
       else if(insp.type === "Followup")
         detailHTML += "During a followup inspection ";
-      detailHTML += prettyDate(insp.date.toISOString())+ " "+ violationString+".</li>"
+      detailHTML += prettyDate(insp.parsedDate.toISOString())+ " "+ violationString+".</li>"
       
     }
 
