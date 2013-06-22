@@ -130,3 +130,43 @@ input {
 #about p {
 	margin: 0px 0px 15px;
 }
+
+#housinginfo div.infoboxes {
+		margin: 0px auto;
+}
+
+#housinginfo div.infoboxes div.inspectbox,
+#housinginfo div.infoboxes div.violationbox {
+	color: #fff;
+	width: 130px;
+	height: 73px;
+	text-align: center;
+	float: left;
+	padding: 5px 0px 0px;
+	margin-bottom: 12px;
+}
+
+#housinginfo div.infoboxes div.inspectbox {
+	background: #009DE7;
+	margin-right: 20px;
+}
+
+#housinginfo div.infoboxes div.violationbox {
+	background: #ED1C24;
+}
+
+#housinginfo div.infoboxes div.boxnumber {
+	font-size: 32px;
+	font-weight: bold;
+	padding: 0px;
+}
+
+#housinginfo div.infoboxes div.inspectbox p,
+#housinginfo div.infoboxes div.violationbox p {
+	text-transform: uppercase;
+	margin-top: 0px;
+}
+
+#housinginfo div.ownername {
+	clear: both;
+}

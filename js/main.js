@@ -167,6 +167,7 @@ function getBuildingDetailsHTML(building){
   
 
   var detailHTML = "<div class='address'><span>"+address+"</span></div>";
+  detailHTML += "<div class='infoboxes'><div class='inspectbox'><div class='boxnumber'>"+building.inspections.length+"</div><p>inspections</p></div><div class='violationbox'><div class='boxnumber'>"+totalViolations+"</div><p>violations</p></div></div>"
   detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
   detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
   detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+(building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
