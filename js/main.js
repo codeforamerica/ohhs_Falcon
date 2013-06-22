@@ -325,7 +325,7 @@ $(function(){
     //
     var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
         building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
-
+    
     $.ajax(building_url, {success: onBuildingLoaded})
 
   } else {
@@ -339,7 +339,21 @@ $(function(){
 
   var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
 
-  
+  function selectBuilding(feature, layer){
+    $('#about').hide();
+
+    $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
+        
+    location.hash = "#"+feature.properties.id;
+
+    if(activeMarker){
+      activeMarker.setIcon(buildingIcon);
+      if(hasViolations(activeMarker.feature.properties))
+        activeMarker.setIcon(buildingIconViolation);
+    }
+    layer.setIcon(buildingIconActive);
+    activeMarker = layer;
+  }
 
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     unique: function (feature) { return feature.properties.id; },
@@ -356,23 +370,17 @@ $(function(){
 
       if(hasViolations(feature.properties))
         layer.setIcon(buildingIconViolation);
+
+      if(location.hash.replace(/^#(\w+)$/, '$1') !== ""){
+        if(location.hash.replace(/^#(\w+)$/, '$1') == feature.properties.id){
+          selectBuilding(feature, layer);
+        }
+      }
   
       markers.push(layer);
 
       layer.on("click", function(){
-        $('#about').hide();
-
-        $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
-        
-        location.hash = "#"+feature.properties.id;
-        
-        if(activeMarker){
-          activeMarker.setIcon(buildingIcon);
-          if(hasViolations(activeMarker.feature.properties))
-            activeMarker.setIcon(buildingIconViolation);
-        }
-        this.setIcon(buildingIconActive);
-        activeMarker = this;
+        selectBuilding(feature, layer);
       });
     }
   });
