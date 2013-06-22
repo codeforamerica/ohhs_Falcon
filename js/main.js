@@ -111,7 +111,12 @@ function hasViolations(building){
 // 
 //
 
-function showNearByBuilding(center){
+function showNearByBuilding(center)
+{
+  if(markers.length == 0)
+  {
+    return;
+  }
 
   var shortestDistanceMarker =null;
   var shortestDistance = null;
