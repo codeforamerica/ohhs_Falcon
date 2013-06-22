@@ -28,11 +28,11 @@
         <div id="map"></div>
         <form id="addressentry">
           <input type="text" id="address" placeholder="Enter an address" /><input type="submit" value="Go" id="submitaddress" />
+          <div id="sampleaddresses">
+            <p>For example <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >670 Stevenson St.</a>, 
+            <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >50 Turk St.</a></p>
+          </div>
         </form>
-        <div id="sampleaddresses">
-          <p>For example <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >670 Stevenson St.</a>, 
-          <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >50 Turk St.</a></p>
-        </div>
         <div id="about"> 
           <h3>What is House Facts?</h3>
           <p>Developed by the City of San Francisco, <a href="http://codeforamerica.org/">Code for America</a>, and leading industry stakeholders the <a href="http://housefacts.me/" target="_blank">House Facts Standard</a> is a uniform format for reporting government data on the health and safety of residential buildings.</p>

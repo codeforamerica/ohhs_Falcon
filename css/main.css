@@ -33,19 +33,20 @@ ul {
 
 #map { 
   height: 230px; 
-  width:100%; 
+  width: 100%; 
 }
 
 #housinginfo{ 
-  padding:10px;
+  padding: 8px 20px 20px
 }
+
 #housinginfo h4{ 
-  margin:0px 0px;
+  margin: 0px 0px;
 }
 
 #housinginfo em{ 
-  font-weight:bold;
-  font-style:normal;
+  font-weight: bold;
+  font-style: normal;
 }
 #housinginfo div {
 	padding: 8px 0px;
@@ -58,81 +59,6 @@ ul {
 #housinginfo .address span {
 	font-size: 20px;
 	line-height: 23px;
-}
-
-/* overrides Safari from making the the text field and button round */
-input {
-	-webkit-appearance: none;
-	-webkit-border-radius: 0px;
-}
-
-#addressentry { 
-  padding: 10px 0 10px 10px;
-	background: #eee;
-}
-
-#address { 
-  width:80%;
-	padding: 6px 0px;
-	border: none;
-}
-
-#submitaddress { 
-  width:50px;
-  height:32px;
-  margin-left:5px;
-  background: #FD8E25;
-	border: none;
-	text-transform: uppercase;
-	font-weight: bold;
-	font-size: 16px;
-	padding: 0px;
-}
-
-#submitaddress:hover {
-	background: #FFC145;	
-}
-
-::-webkit-input-placeholder {
-  font-style: italic;
-  padding-left: 5px;
-}
-
-:-moz-placeholder { /* Firefox 18- */
-  font-style: italic;
-  margin-left: 5px;
-}
-
-::-moz-placeholder {  /* Firefox 19+ */
-  font-style: italic;
-  margin-left: 5px;
-}
-
-:-ms-input-placeholder {  
-  font-style: italic;
-  margin-left: 5px;
-}
-
-#sampleaddresses {
-	font-size: 12px;
-	font-style: italic;
-	padding: 0 20px;
-}
-
-#sampleaddresses p {
-	margin-top: 5px;
-}
-
-#about {
-	padding: 0 20px 20px;
-}
-
-#about h3 {
-	margin-bottom: 12px;
-}
-
-#about p {
-	margin: 0px 0px 15px;
 }
 
 #housinginfo div.infoboxes {
@@ -171,6 +97,83 @@ input {
 	text-transform: uppercase;
 	margin: 0px;
 }
+
+/* overrides Safari from making the the text field and button round */
+input {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0px;
+}
+
+#addressentry { 
+  padding: 10px 0 10px 10px;
+	background: #eee;
+}
+
+#address { 
+  width: 80%;
+	padding: 6px 0px;
+	border: none;
+}
+
+#submitaddress { 
+  width: 50px;
+  height: 32px;
+  margin-left: 5px;
+  background: #FD8E25;
+	border: none;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
+}
+
+#submitaddress:hover {
+	background: #FFC145;	
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  padding-left: 5px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+:-ms-input-placeholder {  
+  font-style: italic;
+  margin-left: 5px;
+}
+
+#sampleaddresses {
+	font-size: 12px;
+	font-style: italic;
+	padding: 0px;
+}
+
+#sampleaddresses p {
+	margin: 5px 0px 0px;
+}
+
+#about {
+	padding: 0 20px 20px;
+}
+
+#about h3 {
+	margin-bottom: 12px;
+}
+
+#about p {
+	margin: 0px 0px 15px;
+}
+
+
 
 #housinginfo div.ownername {
 	clear: both;
