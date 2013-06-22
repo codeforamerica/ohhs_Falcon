@@ -1,5 +1,6 @@
 var map;
-
+var markers = [];
+var fromAddressSearch =false;
 var __defaults = {
     city_name: 'San Francisco',
     data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
@@ -50,9 +51,96 @@ function onLocationFound(location)
 //
 function onAddressFound(response)
 {
-    var center = response.results[0].locations[0].latLng;
-    return boundedSetView(center);
+  var center = response.results[0].locations[0].latLng;
+  fromAddressSearch = true;
+  boundedSetView(center);
+  showNearByBuilding(map.getCenter())
 }
+
+//
+//
+//
+
+function numberToRadius  (number) {
+  return number * Math.PI / 180;
+}
+
+// from http://www.movable-type.co.uk/scripts/latlong.html
+function distanceBetween(pt1, pt2){
+
+  var lon1 = pt1[0],
+  lat1 = pt1[1],
+  lon2 = pt2[0],
+  lat2 = pt2[1],
+  dLat = numberToRadius(lat2 - lat1),
+  dLon = numberToRadius(lon2 - lon1),
+  a = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(numberToRadius(lat1))
+    * Math.cos(numberToRadius(lat2)) * Math.pow(Math.sin(dLon / 2), 2),
+  c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return (6371 * c) * 1000; // returns meters
+}
+
+var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
+                           iconRetinaUrl: 'img/falcon_map_marker@2x.png',
+                           iconSize: [31, 41],
+                           iconAnchor: [14, 41]});
+var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
+                                 iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
+                                 iconSize: [31, 41],
+                                 iconAnchor: [14, 41]});
+var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
+                                    iconSize: [31, 41],
+                                    iconAnchor: [14, 41]});
+
+
+var activeMarker = null;
+
+
+function hasViolations(building){
+  for(i in building.inspections){
+    for(v in building.inspections[i].violations){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+//
+// 
+//
+
+function showNearByBuilding(center){
+
+  var shortestDistanceMarker =null;
+  var shortestDistance = null;
+
+  for(m in markers){
+    var marker = markers[m];
+    var dis = distanceBetween([marker.getLatLng().lat, marker.getLatLng().lng], [center.lat, center.lng])
+    if((shortestDistance == null )||(dis < shortestDistance)){
+      shortestDistance = dis;
+      shortestDistanceMarker = marker;
+    }
+  }
+  
+  $('#about').hide();
+
+  $("div#housinginfo").html(getBuildingDetailsHTML(shortestDistanceMarker.feature.properties));
+        
+  location.hash = "#"+shortestDistanceMarker.feature.properties.id;
+        
+  if(activeMarker){
+    activeMarker.setIcon(buildingIcon);
+    if(hasViolations(activeMarker.feature.properties))
+      activeMarker.setIcon(buildingIconViolation);
+  }
+  shortestDistanceMarker.setIcon(buildingIconActive);
+  activeMarker = shortestDistanceMarker;
+ 
+}
+
 
 //
 // Set up map, but don't set the view to anything.
@@ -237,7 +325,7 @@ $(function(){
     //
     var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
         building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
-
+    
     $.ajax(building_url, {success: onBuildingLoaded})
 
   } else {
@@ -250,30 +338,21 @@ $(function(){
   }
 
   var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
-  var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
-                             iconRetinaUrl: 'img/falcon_map_marker@2x.png',
-                             iconSize: [31, 41],
-                             iconAnchor: [14, 41]});
-  var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
-                                   iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
-                                   iconSize: [31, 41],
-                                   iconAnchor: [14, 41]});
-  var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
-                                      iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
-                                      iconSize: [31, 41],
-                                      iconAnchor: [14, 41]});
 
+  function selectBuilding(feature, layer){
+    $('#about').hide();
 
-  var activeMarker = null;
+    $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
+        
+    location.hash = "#"+feature.properties.id;
 
-
-  function hasViolations(building){
-    for(i in building.inspections){
-      for(v in building.inspections[i].violations){
-        return true;
-      }
+    if(activeMarker){
+      activeMarker.setIcon(buildingIcon);
+      if(hasViolations(activeMarker.feature.properties))
+        activeMarker.setIcon(buildingIconViolation);
     }
-    return false;
+    layer.setIcon(buildingIconActive);
+    activeMarker = layer;
   }
 
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
@@ -291,25 +370,31 @@ $(function(){
 
       if(hasViolations(feature.properties))
         layer.setIcon(buildingIconViolation);
-        
+
+      if(location.hash.replace(/^#(\w+)$/, '$1') !== ""){
+        if(location.hash.replace(/^#(\w+)$/, '$1') == feature.properties.id){
+          selectBuilding(feature, layer);
+        }
+      }
+  
+      markers.push(layer);
 
       layer.on("click", function(){
-        $('#about').hide();
-
-        $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
-        
-        location.hash = "#"+feature.properties.id;
-        
-        if(activeMarker){
-          activeMarker.setIcon(buildingIcon);
-          if(hasViolations(activeMarker.feature.properties))
-            activeMarker.setIcon(buildingIconViolation);
-        }
-        this.setIcon(buildingIconActive);
-        activeMarker = this;
+        selectBuilding(feature, layer);
       });
     }
   });
+
+  geojsonTileLayer.on("load", function(a){
+
+    // if the loading of these tiles was triggered by an address search, 
+    // then we show the building nearest to the address (or at this point map center)
+
+    if(fromAddressSearch)
+      showNearByBuilding(map.getCenter())
+    fromAddressSearch = false;
+  });
+
   map.addLayer(geojsonTileLayer);
 
 
