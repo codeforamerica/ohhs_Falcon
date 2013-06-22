@@ -194,9 +194,16 @@ var n = this,
  * Licensed under the MIT and GPL licenses.
  */
 
-function prettyDate(time){
-	var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
-		diff = (((new Date()).getTime() - date.getTime()) / 1000),
+function prettyDate(time)
+{
+    if(time.substr) {
+        var date = new Date(time.substr(0, 4), time.substr(5, 2), time.substr(8, 2));
+
+    } else {
+        var date = time;
+    }
+    
+	var diff = (((new Date()).getTime() - date.getTime()) / 1000),
 		day_diff = Math.floor(diff / 86400);
 			
 	if ( isNaN(day_diff) || day_diff < 0 )
@@ -264,7 +271,7 @@ function getBuildingDetailsHTML(building){
   detailHTML += "<div class='ownername'><span>Building Owner: </span>"+building.owner_name.toProperCase()+"</div>";
   detailHTML += "<div class='propertyid'><span>Property ID: </span>"+building.id+"</div>";
   detailHTML += "<div class='inspections'> This building has been <span> inspected "+building.inspections.length+" times</span>"+
-    (building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate.toISOString())+".</div>" : ".");
+    (building.inspections.length > 0 ? ", most recently "+prettyDate(recentInspectionDate)+".</div>" : ".");
 
   if(building.inspections.length > 0)
     detailHTML += "<div class='violations'>There "+ (totalViolations > 1 ? "has" : "have")+" been <span>"+totalViolations+" violation"+(totalViolations > 1 ? "s" : "")+
@@ -282,7 +289,7 @@ function getBuildingDetailsHTML(building){
         violationString += " <em>"+ vio.count+" "+vio.category + "</em> (" + vio.type + ") violation"+(vio.count > 1 ? "s were" : " was")+" found, ";
         if(vio.date_closed)
           violationString += " and "+(vio.count > 1 ? "were": "was")+" closed "+ 
-          prettyDate((new Date(vio.date_closed.substr(0,4), vio.date_closed.substr(5,2), vio.date_closed.substr(8,2)).toISOString()));
+          prettyDate(vio.date_closed);
         
         else
           violationString+= " and "+(vio.count > 1 ? "were": "was")+" never resolved."
@@ -296,7 +303,7 @@ function getBuildingDetailsHTML(building){
         detailHTML += "During a routine inspection";
       else if(insp.type === "Followup")
         detailHTML += "During a followup inspection ";
-      detailHTML += prettyDate(insp.parsedDate.toISOString())+ " "+ violationString+".</li>"
+      detailHTML += prettyDate(insp.parsedDate)+ " "+ violationString+".</li>"
       
     }
 
