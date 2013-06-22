@@ -15,6 +15,10 @@ a:hover {
 	color: #FFC145;
 }
 
+ul {
+	margin: 3px 0px 0px;
+}
+
 #header {
 	height: 41px;
 	background: #19A89D;
