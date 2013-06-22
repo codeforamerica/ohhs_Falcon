@@ -37,7 +37,7 @@ ul {
 }
 
 #housinginfo{ 
-  padding: 8px 20px 20px
+  padding: 15px 20px 20px
 }
 
 #housinginfo h4{ 
@@ -62,7 +62,7 @@ ul {
 }
 
 #housinginfo div.infoboxes {
-		margin: 0px auto;
+	margin: 0px auto;
 }
 
 #housinginfo div.infoboxes div.inspectbox,
