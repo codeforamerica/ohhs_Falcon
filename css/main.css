@@ -47,6 +47,7 @@ ul {
 #housinginfo em{ 
   font-weight: bold;
   font-style: normal;
+  white-space: nowrap;
 }
 #housinginfo div {
 	padding: 8px 0px;
