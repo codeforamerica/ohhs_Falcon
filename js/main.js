@@ -12,13 +12,18 @@ var __defaults = {
 //
 // map.setView() with a check for SF bounds.
 //
-function boundedSetView(center)
+function boundedSetView(center, skip_alert)
 {
     var bounds = __defaults.bounds;
     
     if(center.lat > bounds[0] || center.lng < bounds[1] || center.lat < bounds[2] || center.lng > bounds[3])
     {
         // found location is outside of default city, so we will not set the view.
+        if(skip_alert)
+        {
+            return;
+        }
+
         return alert("You were about to look outside of "+__defaults.city_name+" - try searching for an address inside the city?");
     }
     
@@ -42,7 +47,7 @@ function onLocationFound(location)
         return alert("couldn't locate you with sufficient accuracy");
     }
     
-    return boundedSetView(center);
+    return boundedSetView(center, true);
 }
 
 //
