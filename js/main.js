@@ -27,7 +27,7 @@ function boundedSetView(center, skip_alert)
         return alert("You were about to look outside of "+__defaults.city_name+" - try searching for an address inside the city?");
     }
     
-    map.setView(center, 18);
+    map.setView(center, 17);
 }
 
 //
