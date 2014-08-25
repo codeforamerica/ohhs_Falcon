@@ -236,8 +236,6 @@ function prettyDate(time)
 //
 
 function getBuildingDetailsHTML(building){
-  console.log(building);
-
   var address = building.street_number + " " + building.street_name;
 
   var detailHTML = "<div class='address'><span>"+address+"</span></div>";
