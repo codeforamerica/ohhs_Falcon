@@ -2,7 +2,7 @@ var map;
 var markers = [];
 var fromAddressSearch =false;
 var __defaults = {
-    city_name: 'San Francisco',
+    city_name: 'Oakland',
     data_url: 'http://data.codeforamerica.org/soft-story',
     bounds: [37.85615, -122.35233, 37.719948, -122.129516],
     center: [37.80327385, -122.257575988],
@@ -483,7 +483,7 @@ $(function(){
     var data = {outFormat:"json",
                 inFormat:"kvp",
                 key:__defaults.mapquest_key,
-                boundingBox:"37.816,-122.536,37.693,-122.340",
+                boundingBox:"37.85615,-122.35233,37.719948,-122.129516",
                 location:$("#address").val() + ', ' + __defaults.city_name};
     
     $.ajax(url, {data: data, dataType: 'jsonp', success: onAddressFound});
