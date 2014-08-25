@@ -3,9 +3,9 @@ var markers = [];
 var fromAddressSearch =false;
 var __defaults = {
     city_name: 'San Francisco',
-    data_url: 'http://data.codeforamerica.org/OHHS/SF/1.2',
-    bounds: [37.816, -122.536, 37.693, -122.340],
-    center: [37.767745, -122.441475],
+    data_url: 'http://data.codeforamerica.org/soft-story',
+    bounds: [37.85615, -122.35233, 37.719948, -122.129516],
+    center: [37.80327385, -122.257575988],
     mapquest_key: "Fmjtd|luua2q6and,aa=o5-hzb59"
     };
 
