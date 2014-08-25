@@ -165,7 +165,7 @@ function setupMap(element)
         mapquestUrl = 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
         subDomains = ['otile1','otile2','otile3','otile4'],
         mapquestAttrib = 'Data by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.',
-        mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 19, attribution: mapquestAttrib, subdomains: '1234'});
+        mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 18, minZoom: 14, attribution: mapquestAttrib, subdomains: '1234'});
     
     map.addLayer(mapquest);
     
@@ -414,7 +414,7 @@ $(function(){
     //
     map.setView(__defaults.center, 14);
     map.on('locationfound', onLocationFound);
-    map.locate({setView: false, maxZoom: 19});
+    map.locate({setView: false, maxZoom: 18});
   }
 
   var geojsonURL = __defaults.data_url+'/tiles/{z}/{x}/{y}.json';
@@ -436,11 +436,10 @@ $(function(){
   }
 
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
-    unique: function (feature) { return feature.properties.id; },
-    maxZoom:20
+    unique: function (feature) { return feature.id; },
+    maxZoom:18
   }, {
     pointToLayer: function(feature, latlng){
-
       return L.marker(latlng, {icon:buildingIcon});
     },
     onEachFeature: function (feature, layer) {
