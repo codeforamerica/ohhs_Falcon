@@ -424,7 +424,7 @@ $(function(){
 
     $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
         
-    location.hash = "#"+feature.properties.id;
+    location.hash = "#"+feature.properties.parcel_number;
 
     if(activeMarker){
       activeMarker.setIcon(buildingIcon);
