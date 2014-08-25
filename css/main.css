@@ -4,15 +4,16 @@ input,
 select,
 textarea {
 	font-family: 'Open Sans', sans-serif;
+	color: #666;
 }
 
 a {
-	color: #FD8E25;
+	color: #00699A;
 	font-weight: bold;
 }
 
 a:hover {
-	color: #FFC145;
+	color: #009DE7;
 }
 
 ul {
@@ -21,7 +22,7 @@ ul {
 
 #header {
 	height: 41px;
-	background: #19A89D;
+	background: #00699A;
 }
 
 #header img {
@@ -106,30 +107,31 @@ input {
 }
 
 #addressentry { 
-  padding: 10px 0 10px 10px;
+  padding: 10px 10% 10px 10%;
 	background: #eee;
 }
 
 #address { 
   width: 80%;
-	padding: 6px 0px;
+	padding: 6px 1%;
 	border: none;
 }
 
 #submitaddress { 
-  width: 50px;
+  width: 80px;
   height: 32px;
-  margin-left: 5px;
-  background: #FD8E25;
+  margin-left: 7px;
+  color: #f8f8ff;
+  background: #FF8B00;
 	border: none;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	font-weight: bold;
 	font-size: 16px;
 	padding: 0px;
 }
 
 #submitaddress:hover {
-	background: #FFC145;	
+	background: #FFAE4C;	
 }
 
 ::-webkit-input-placeholder {
@@ -156,6 +158,7 @@ input {
 	font-size: 12px;
 	font-style: italic;
 	padding: 0px;
+	margin-left: 10px;
 }
 
 #sampleaddresses p {
