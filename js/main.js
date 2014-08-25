@@ -85,18 +85,22 @@ function distanceBetween(pt1, pt2){
   return (6371 * c) * 1000; // returns meters
 }
 
+var sizeForAllIcons = [15,20];
 var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
                            iconRetinaUrl: 'img/falcon_map_marker@2x.png',
-                           iconSize: [31, 41],
-                           iconAnchor: [14, 41]});
+                           //iconSize: [31, 41],
+                           iconSize: sizeForAllIcons});
+                           //iconAnchor: [14, 41]});
 var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
                                  iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
-                                 iconSize: [31, 41],
-                                 iconAnchor: [14, 41]});
+                                 //iconSize: [31, 41],
+                                 iconSize: sizeForAllIcons});
+                                 //iconAnchor: [14, 41]});
 var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
                                     iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
-                                    iconSize: [31, 41],
-                                    iconAnchor: [14, 41]});
+                                    //iconSize: [31, 41],
+                                    iconSize: sizeForAllIcons});
+                                    //iconAnchor: [14, 41]});
 
 
 var activeMarker = null;
