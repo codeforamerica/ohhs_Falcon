@@ -85,7 +85,8 @@ function distanceBetween(pt1, pt2){
   return (6371 * c) * 1000; // returns meters
 }
 
-var sizeForAllIcons = [15,20];
+//var sizeForAllIcons = [15,20];
+var sizeForAllIcons = [16,21];
 var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
                            iconRetinaUrl: 'img/falcon_map_marker@2x.png',
                            //iconSize: [31, 41],
