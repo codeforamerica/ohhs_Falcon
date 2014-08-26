@@ -91,12 +91,12 @@ var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
                            //iconSize: [31, 41],
                            iconSize: sizeForAllIcons});
                            //iconAnchor: [14, 41]});
-var buildingIconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
+var iconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
                                  iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
                                  //iconSize: [31, 41],
                                  iconSize: sizeForAllIcons});
                                  //iconAnchor: [14, 41]});
-var buildingIconViolation = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
+var level2Icon = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
                                     iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
                                     //iconSize: [31, 41],
                                     iconSize: sizeForAllIcons});
@@ -147,10 +147,11 @@ function showNearByBuilding(center)
         
   if(activeMarker){
     activeMarker.setIcon(buildingIcon);
-    if(hasViolations(activeMarker.feature.properties))
-      activeMarker.setIcon(buildingIconViolation);
+    if(feature.properties.status_short === 'Level 2') {
+      activeMarker.setIcon(level2Icon);
+    }
   }
-  shortestDistanceMarker.setIcon(buildingIconActive);
+  shortestDistanceMarker.setIcon(iconActive);
   activeMarker = shortestDistanceMarker;
  
 }
@@ -236,10 +237,10 @@ function prettyDate(time)
 //
 
 function getBuildingDetailsHTML(building){
-  var address = building.street_number + " " + building.street_name;
+  //var address = building.street_number + " " + building.street_name;
 
-  var detailHTML = "<div class='address'><span>"+address+"</span></div>";
-  detailHTML += "<div class='infoboxes'><div class='inspectbox'><p>status</p><div class='boxnumber'>" + building.status + "</div></div></div></div>"
+  var detailHTML = "<div class='address'><span>"+building.address+"</span></div>";
+  detailHTML += "<div class='infoboxes'><div class='inspectbox'><p>status</p><div class='boxnumber'>" + building.status_short + "</div>"+building.status_long+"</div></div>"
 
 /*
   detailHTML += "<div class='ownername'><span>Building Owner: </span>"+"</div>";
@@ -397,12 +398,12 @@ $(function(){
 
   map = setupMap('map');
   
-  if(location.hash.match(/^#\w+$/)) {
+  if(location.hash.match(/^#.+$/)) {
     //
     // Found what looks like a building ID in the URL, so use it.
     //
-    var building_id = location.hash.replace(/^#(\w+)$/, '$1'),
-        building_url = __defaults.data_url+'/buildings/'+building_id+'.json';
+    var building_id = location.hash.replace(/^#(.+)$/, '$1'),
+        building_url = __defaults.data_url+'/parcels/'+building_id+'.json';
     
     $.ajax(building_url, {success: onBuildingLoaded})
 
@@ -422,14 +423,15 @@ $(function(){
 
     $("div#housinginfo").html(getBuildingDetailsHTML(feature.properties));
         
-    location.hash = "#"+feature.properties.parcel_number;
+    location.hash = "#"+feature.id;
 
     if(activeMarker){
       activeMarker.setIcon(buildingIcon);
-      if(hasViolations(activeMarker.feature.properties))
-        activeMarker.setIcon(buildingIconViolation);
+      if(activeMarker.feature.properties.status_short === 'Level 2') {
+        activeMarker.setIcon(level2Icon);
+      }
     }
-    layer.setIcon(buildingIconActive);
+    layer.setIcon(iconActive);
     activeMarker = layer;
   }
 
@@ -443,10 +445,11 @@ $(function(){
     onEachFeature: function (feature, layer) {
 
       if(activeMarker == layer)
-        layer.setIcon(buildingIconActive);
+        layer.setIcon(iconActive);
 
-      if(hasViolations(feature.properties))
-        layer.setIcon(buildingIconViolation);
+      if(feature.properties.status_short === 'Level 2') {
+        layer.setIcon(level2Icon);
+      }
 
       if(location.hash.replace(/^#(\w+)$/, '$1') !== ""){
         if(location.hash.replace(/^#(\w+)$/, '$1') == feature.properties.id){
