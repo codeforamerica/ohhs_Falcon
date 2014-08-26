@@ -288,10 +288,9 @@ $(function(){
 
   } else {
     //
-    // Otherwise, just pick out the center of the city and then try geolocating.
+    // Otherwise, just pick out the center of the city
     //
     map.setView(__defaults.center, 14);
-    map.on('locationfound', onLocationFound);
     map.locate({setView: false, maxZoom: 18});
   }
 
