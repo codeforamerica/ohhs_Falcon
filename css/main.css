@@ -1,0 +1,184 @@
+html,
+button,
+input,
+select,
+textarea {
+	font-family: 'Open Sans', sans-serif;
+	color: #666;
+}
+
+a {
+	color: #00699A;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #009DE7;
+}
+
+ul {
+	margin: 3px 0px 0px;
+}
+
+#header {
+	height: 41px;
+	background: #00699A;
+}
+
+#header img {
+	width: 150px;
+	margin: 0px auto;
+	display: block;
+	padding: 7px 0px;
+}
+
+#map { 
+  height: 230px; 
+  width: 100%; 
+}
+
+#housinginfo{ 
+  padding: 15px 20px 20px
+}
+
+#housinginfo h4{ 
+  margin: 0px 0px;
+}
+
+#housinginfo em{ 
+  font-weight: bold;
+  font-style: normal;
+  white-space: nowrap;
+}
+#housinginfo div {
+	padding: 8px 0px;
+}
+
+#housinginfo span {
+	font-weight: bold;
+}
+
+#housinginfo .address span {
+	font-size: 20px;
+	line-height: 23px;
+}
+
+#housinginfo div.infoboxes {
+	margin: 0px auto;
+}
+
+#housinginfo div.infoboxes div.inspectbox,
+#housinginfo div.infoboxes div.violationbox {
+	color: #fff;
+	width: 98%;
+	height: 64px;
+	text-align: center;
+	padding: 7px 0px 0px;
+	margin-bottom: 10px;
+}
+
+#housinginfo div.infoboxes div.inspectbox {
+	background: #00699A;
+	float: left;
+}
+
+#housinginfo div.infoboxes div.violationbox {
+	background: #ED1C24;
+	float: right;
+}
+
+#housinginfo div.infoboxes div.boxnumber {
+	font-size: 32px;
+	font-weight: bold;
+	line-height: 34px;
+	padding: 0px;
+}
+
+#housinginfo div.infoboxes div.inspectbox p,
+#housinginfo div.infoboxes div.violationbox p {
+	text-transform: uppercase;
+	margin: 0px;
+}
+
+/* overrides Safari from making the the text field and button round */
+input {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0px;
+}
+
+#addressentry { 
+  padding: 10px 10% 10px 10%;
+	background: #eee;
+}
+
+#address { 
+  width: 80%;
+	padding: 6px 1%;
+	border: none;
+}
+
+#submitaddress { 
+  width: 80px;
+  height: 32px;
+  margin-left: 7px;
+  color: #f8f8ff;
+  background: #FF8B00;
+	border: none;
+	/*text-transform: uppercase;*/
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
+}
+
+#submitaddress:hover {
+	background: #FFAE4C;	
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  padding-left: 5px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style: italic;
+  margin-left: 5px;
+}
+
+:-ms-input-placeholder {  
+  font-style: italic;
+  margin-left: 5px;
+}
+
+#sampleaddresses {
+	font-size: 12px;
+	font-style: italic;
+	padding: 0px;
+	margin-left: 10px;
+}
+
+#sampleaddresses p {
+	margin: 5px 0px 0px;
+}
+
+#about {
+	padding: 0 20px 20px;
+}
+
+#about h3 {
+	margin-bottom: 12px;
+}
+
+#about p {
+	margin: 0px 0px 15px;
+}
+
+
+
+#housinginfo div.ownername {
+	clear: both;
+}

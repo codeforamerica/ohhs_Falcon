@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+            <![endif]-->
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="header"><a href="/SF"><img src="img/house_facts.png" /></a></div>
+        <div id="map"></div>
+        <form id="addressentry">
+          <input type="text" id="address" placeholder="Enter an address" /><input type="submit" value="Find" id="submitaddress" />
+          <div id="sampleaddresses">
+            <p>For example <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >670 Stevenson St.</a>, 
+            <a href="#" onclick="$('#address').val($(this).text());$('#addressentry').submit(); return false;" >50 Turk St.</a></p>
+          </div>
+        </form>
+        <div id="about"> 
+          <h3>What is House Facts?</h3>
+          <p>Developed by the City of San Francisco, <a href="http://codeforamerica.org/">Code for America</a>, and leading industry stakeholders the <a href="http://housefacts.me/" target="_blank">House Facts Standard</a> is a uniform format for reporting government data on the health and safety of residential buildings.</p>
+          <p>The data standard provides a full health and safety history for every house and apartment in participating cities. Greater transparency helps keep owners accountable and further incentivizes compliance with regulations that ensure health, safety and habitability.</p>
+          <p>This app is currently built for San Francisco, CA but can be easily deployed in your city. If you're interested, <a href="http://housefacts.me/" target="_blank">let us know</a>.</p>
+        </div>
+        <div id="housinginfo">
+
+        </div>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+        <script src="js/vendor/TileLayer.GeoJSON.js"></script>       
+        <script src="js/main.js"></script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-20825280-12', 'codeforamerica.org');
+          ga('send', 'pageview');
+        </script>
+    </body>
+</html>
