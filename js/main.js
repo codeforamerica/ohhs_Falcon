@@ -97,8 +97,23 @@ var iconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
                                  //iconSize: [31, 41],
                                  iconSize: sizeForAllIcons});
                                  //iconAnchor: [14, 41]});
-var level2Icon = L.icon({iconUrl: 'img/falcon_map_marker_violation@1x.png',
-                                    iconRetinaUrl: 'img/falcon_map_marker_violation@2x.png',
+var level2Icon = L.icon({iconUrl: 'img/falcon_map_marker_level2@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_level2@2x.png',
+                                    //iconSize: [31, 41],
+                                    iconSize: sizeForAllIcons});
+                                    //iconAnchor: [14, 41]});
+var level1Icon = L.icon({iconUrl: 'img/falcon_map_marker_level1@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_level1@2x.png',
+                                    //iconSize: [31, 41],
+                                    iconSize: sizeForAllIcons});
+                                    //iconAnchor: [14, 41]});
+var incompleteIcon = L.icon({iconUrl: 'img/falcon_map_marker_incomplete@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_incomplete@2x.png',
+                                    //iconSize: [31, 41],
+                                    iconSize: sizeForAllIcons});
+                                    //iconAnchor: [14, 41]});
+var exemptIcon = L.icon({iconUrl: 'img/falcon_map_marker_exempt@1x.png',
+                                    iconRetinaUrl: 'img/falcon_map_marker_exempt@2x.png',
                                     //iconSize: [31, 41],
                                     iconSize: sizeForAllIcons});
                                     //iconAnchor: [14, 41]});
@@ -147,9 +162,18 @@ function showNearByBuilding(center)
   location.hash = "#"+shortestDistanceMarker.feature.properties.id;
         
   if(activeMarker){
-    activeMarker.setIcon(buildingIcon);
+    //activeMarker.setIcon(buildingIcon);
     if(feature.properties.status_short === 'Level 2') {
       activeMarker.setIcon(level2Icon);
+    }
+    if(feature.properties.status_short === 'Level 1') {
+      activeMarker.setIcon(level1Icon);
+    }
+    if(feature.properties.status_short === 'Incomplete Evaluation') {
+      activeMarker.setIcon(incompleteIcon);
+    }
+    if(feature.properties.status_short === 'Exempt') {
+      activeMarker.setIcon(exemptIcon);
     }
   }
   shortestDistanceMarker.setIcon(iconActive);
@@ -427,9 +451,18 @@ $(function(){
     location.hash = "#"+feature.id;
 
     if(activeMarker){
-      activeMarker.setIcon(buildingIcon);
+      //activeMarker.setIcon(buildingIcon);
       if(activeMarker.feature.properties.status_short === 'Level 2') {
         activeMarker.setIcon(level2Icon);
+      }
+      else if(activeMarker.feature.properties.status_short === 'Level 1') {
+        activeMarker.setIcon(level1Icon);
+      }
+      else if(activeMarker.feature.properties.status_short === 'Incomplete Evaluation') {
+        activeMarker.setIcon(incompleteIcon);
+      }
+      else if(activeMarker.feature.properties.status_short === 'Exempt') {
+        activeMarker.setIcon(exemptIcon);
       }
     }
     layer.setIcon(iconActive);
@@ -450,6 +483,15 @@ $(function(){
 
       if(feature.properties.status_short === 'Level 2') {
         layer.setIcon(level2Icon);
+      }
+      else if(feature.properties.status_short === 'Level 1') {
+        layer.setIcon(level1Icon);
+      }
+      else if(feature.properties.status_short === 'Incomplete Evaluation') {
+        layer.setIcon(incompleteIcon);
+      }
+      else if(feature.properties.status_short === 'Exempt') {
+        layer.setIcon(exemptIcon);
       }
 
       if(location.hash.replace(/^#(\w+)$/, '$1') !== ""){
