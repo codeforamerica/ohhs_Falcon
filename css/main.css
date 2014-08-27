@@ -4,15 +4,16 @@ input,
 select,
 textarea {
 	font-family: 'Open Sans', sans-serif;
+	color: #666;
 }
 
 a {
-	color: #FD8E25;
+	color: #00699A;
 	font-weight: bold;
 }
 
 a:hover {
-	color: #FFC145;
+	color: #009DE7;
 }
 
 ul {
@@ -21,11 +22,12 @@ ul {
 
 #header {
 	height: 41px;
-	background: #19A89D;
+	background: #00699A;
 }
 
 #header img {
-	width: 150px;
+        max-height: 69%;
+        max-width: 100%;
 	margin: 0px auto;
 	display: block;
 	padding: 7px 0px;
@@ -69,15 +71,13 @@ ul {
 #housinginfo div.infoboxes div.inspectbox,
 #housinginfo div.infoboxes div.violationbox {
 	color: #fff;
-	width: 49%;
-	height: 64px;
+	width: 98%;
 	text-align: center;
-	padding: 7px 0px 0px;
 	margin-bottom: 10px;
 }
 
 #housinginfo div.infoboxes div.inspectbox {
-	background: #19A89D;
+	background: #00699A;
 	float: left;
 }
 
@@ -106,30 +106,31 @@ input {
 }
 
 #addressentry { 
-  padding: 10px 0 10px 10px;
+  padding: 10px 10% 10px 10%;
 	background: #eee;
 }
 
 #address { 
   width: 80%;
-	padding: 6px 0px;
+	padding: 6px 1%;
 	border: none;
 }
 
 #submitaddress { 
-  width: 50px;
+  width: 80px;
   height: 32px;
-  margin-left: 5px;
-  background: #FD8E25;
+  margin-left: 7px;
+  color: #f8f8ff;
+  background: #FF8B00;
 	border: none;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	font-weight: bold;
 	font-size: 16px;
 	padding: 0px;
 }
 
 #submitaddress:hover {
-	background: #FFC145;	
+	background: #FFAE4C;	
 }
 
 ::-webkit-input-placeholder {
@@ -156,6 +157,7 @@ input {
 	font-size: 12px;
 	font-style: italic;
 	padding: 0px;
+	margin-left: 10px;
 }
 
 #sampleaddresses p {
