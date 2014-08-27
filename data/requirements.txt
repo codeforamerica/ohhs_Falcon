@@ -1,3 +1,2 @@
-requests
-dateutils
-ModestMaps
+ModestMaps==1.4.6
+Pillow==2.5.3

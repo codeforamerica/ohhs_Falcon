@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 from itertools import product
 from os import makedirs
+from csv import DictReader
 from json import dump
+from re import sub
 
 from ModestMaps.Geo import Location
 from ModestMaps.Core import Coordinate
 from ModestMaps.OpenStreetMap import Provider
 
-from lib import load_violations, load_inspections, load_buildings
-from lib import match_inspection_violations, match_building_inspections
-
 min_zoom = 14
-max_zoom = 17
+max_zoom = 18
 
 def starting_tiles(buildings):
     ''' Get tile coordinates at min_zoom for a list of buildings.
@@ -47,38 +46,26 @@ def search_tile(coord, buildings):
 
 if __name__ == '__main__':
 
-    print 'Getting violations...'
+    statuses = list()
 
-    violations_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Violations.csv'
-    violations = load_violations(violations_url)
-
-    print 'Getting inspections...'
-
-    inspections_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Inspections.csv'
-    inspections = load_inspections(inspections_url)
-
-    print 'Getting buildings...'
-
-    buildings_url = 'http://s3.amazonaws.com/data.codeforamerica.org/OHHS/SF/1.2/Buildings.csv'
-    buildings = load_buildings(buildings_url)
+    with open('statuses-2014-08-25.csv', 'rU') as f:
+        for row in DictReader(f, dialect='excel'):
+            if row['latitude']:
+                statuses.append(row)
+                statuses[-1]['latitude'] = float(statuses[-1]['latitude'])
+                statuses[-1]['longitude'] = float(statuses[-1]['longitude'])
     
-    print 'Matching inspection violations...'
-    
-    match_inspection_violations(violations, inspections)
-    
-    print 'Matching building inspections...'
-    
-    match_building_inspections(inspections, buildings)
-    
-    building_list = buildings.values()
-    search_coords = [(coord, building_list) for coord in starting_tiles(building_list)]
+    search_coords = [(coord, statuses) for coord in starting_tiles(statuses)]
     
     while search_coords:
-        coord, building_list = search_coords.pop(0)
-        found_buildings = search_tile(coord, building_list)
+        coord, status_list = search_coords.pop(0)
+        found_buildings = search_tile(coord, status_list)
         
         print ('%(zoom)d/%(column)d/%(row)d' % coord.__dict__),
-        print len(found_buildings), 'of', len(building_list)
+        print len(found_buildings), 'of', len(status_list)
+        
+        if len(found_buildings) == 0:
+            continue
         
         try:
             makedirs('tiles/%(zoom)d/%(column)d' % coord.__dict__)
@@ -87,7 +74,7 @@ if __name__ == '__main__':
         
         with open('tiles/%(zoom)d/%(column)d/%(row)d.json' % coord.__dict__, 'w') as out:
             features = [dict(
-                            id=p['id'],
+                            id=sub(r'\W', '-', p['address']),
                             type='Feature',
                             properties=p,
                             geometry=dict(
