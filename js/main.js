@@ -87,6 +87,7 @@ function distanceBetween(pt1, pt2){
 
 //var sizeForAllIcons = [15,20];
 var sizeForAllIcons = [16,21];
+var sizeForSelectedIcon = [24,31];
 var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
                            iconRetinaUrl: 'img/falcon_map_marker@2x.png',
                            //iconSize: [31, 41],
@@ -95,7 +96,7 @@ var buildingIcon = L.icon({iconUrl: 'img/falcon_map_marker@1x.png',
 var iconActive = L.icon({iconUrl: 'img/falcon_map_marker_active2@1x.png',
                                  iconRetinaUrl: 'img/falcon_map_marker_active2@2x.png',
                                  //iconSize: [31, 41],
-                                 iconSize: sizeForAllIcons});
+                                 iconSize: sizeForSelectedIcon});
                                  //iconAnchor: [14, 41]});
 var level2Icon = L.icon({iconUrl: 'img/falcon_map_marker_level2@1x.png',
                                     iconRetinaUrl: 'img/falcon_map_marker_level2@2x.png',
