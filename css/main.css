@@ -27,6 +27,7 @@ ul {
 
 #header img {
         max-height: 69%;
+        max-width: 100%;
 	margin: 0px auto;
 	display: block;
 	padding: 7px 0px;
